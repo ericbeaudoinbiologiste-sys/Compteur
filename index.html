@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minuteur Intervalles</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <h1>Minuteur d’entraînement</h1>
+      <p class="sub">PWA — intervalles avec exercices aléatoires</p>
+    </header>
+
+    <section class="card">
+      <h2>Réglages</h2>
+
+      <div class="grid">
+        <label>
+          Préparation (s)
+          <input id="prepSec" type="number" min="0" max="3600" step="1" />
+        </label>
+
+        <label>
+          Travail (s)
+          <input id="workSec" type="number" min="1" max="3600" step="1" />
+        </label>
+
+        <label>
+          Repos (s)
+          <input id="restSec" type="number" min="0" max="3600" step="1" />
+        </label>
+
+        <label>
+          Retour au calme (s)
+          <input id="cooldownSec" type="number" min="0" max="3600" step="1" />
+        </label>
+
+        <label>
+          Intervalles (Travail+Repos)
+          <input id="rounds" type="number" min="1" max="200" step="1" />
+        </label>
+
+        <label>
+          Bips dernières secondes
+          <input id="beepLast" type="number" min="0" max="10" step="1" />
+        </label>
+      </div>
+
+      <div class="row">
+        <button id="saveBtn" class="btn secondary">Sauver</button>
+        <button id="resetBtn" class="btn ghost">Réinitialiser</button>
+      </div>
+
+      <details class="mt">
+        <summary>Liste d’exercices (modifiable dans app.js)</summary>
+        <p class="muted">Par défaut : base, side straddle, ciseaux, boxer (tirage aléatoire avec remise à chaque intervalle de travail).</p>
+      </details>
+    </section>
+
+    <section class="card big">
+      <div class="status">
+        <div>
+          <div class="label">Phase</div>
+          <div id="phaseLabel" class="value">—</div>
+        </div>
+        <div>
+          <div class="label">Intervalles</div>
+          <div id="roundLabel" class="value">—</div>
+        </div>
+      </div>
+
+      <div class="timer" id="timeLabel">00:00</div>
+
+      <div class="exercise">
+        <div class="label">Exercice</div>
+        <div id="exerciseLabel" class="exerciseName">—</div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" class="btn primary">Démarrer</button>
+        <button id="pauseBtn" class="btn secondary" disabled>Pause</button>
+        <button id="skipBtn" class="btn ghost" disabled>Passer</button>
+        <button id="stopBtn" class="btn danger" disabled>Stop</button>
+      </div>
+
+      <p id="hint" class="hint">
+        Astuce : laisse la page ouverte au premier plan pour le wake lock et une meilleure fiabilité audio.
+      </p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
