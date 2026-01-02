@@ -126,11 +126,11 @@ input:focus{border-color: rgba(56,189,248,.45); box-shadow: 0 0 0 3px rgba(56,18
 }
 
 /* Couleurs par phase : on change un accent visuel */
-body.phase-prep .card.big { border-color: rgba(56,189,248,.45); box-shadow: 0 0 0 3px rgba(56,189,248,.12); }
-body.phase-work .card.big { border-color: rgba(34,197,94,.45);  box-shadow: 0 0 0 3px rgba(34,197,94,.12); }
-body.phase-rest .card.big { border-color: rgba(239,68,68,.45);  box-shadow: 0 0 0 3px rgba(239,68,68,.12); }
-body.phase-cooldown .card.big { border-color: rgba(56,189,248,.45); box-shadow: 0 0 0 3px rgba(56,189,248,.12); }
-body.phase-done .card.big { border-color: rgba(148,163,184,.35); box-shadow:none; }
+body.phase-prep .card.big { background: rgba(56,189,248,.45); box-shadow: 0 0 0 3px rgba(56,189,248,.12); }
+body.phase-work .card.big { background: rgba(34,197,94,.45);  box-shadow: 0 0 0 3px rgba(34,197,94,.12); }
+body.phase-rest .card.big { background: rgba(239,68,68,.45);  box-shadow: 0 0 0 3px rgba(239,68,68,.12); }
+body.phase-cooldown .card.big { background: rgba(56,189,248,.45); box-shadow: 0 0 0 3px rgba(56,189,248,.12); }
+body.phase-done .card.big { background: rgba(148,163,184,.35); box-shadow:none; }
 
 /* Ajouter une exercices
 .h4{
