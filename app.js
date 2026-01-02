@@ -454,16 +454,23 @@ function settingsFromUI() {
 }
 
 function settingsToUI(s) {
-  el.prepSec.value = s.prepSec;
-  el.workSec.value = s.workSec;
-  el.restSec.value = s.restSec;
-  el.cooldownSec.value = s.cooldownSec;
-  el.rounds.value = s.rounds;
-  el.beepLast.value = s.beepLast;
+  // Durées + paramètres
+  el.prepSec.value = (s.prepSec ?? DEFAULTS.prepSec);
+  el.workSec.value = (s.workSec ?? DEFAULTS.workSec);
+  el.restSec.value = (s.restSec ?? DEFAULTS.restSec);
+  el.cooldownSec.value = (s.cooldownSec ?? DEFAULTS.cooldownSec);
+  el.rounds.value = (s.rounds ?? DEFAULTS.rounds);
+  el.beepLast.value = (s.beepLast ?? DEFAULTS.beepLast);
 
+  // Exercices (fallback si vide)
   exercisesState = normalizeExercises(s.exercises);
+  if (!exercisesState.length) {
+    exercisesState = DEFAULT_EXERCISES.map(x => ({ ...x }));
+  }
+
   renderExerciseChecklist();
 }
+
 
 /***********************
  * LOGIQUE MÉTIER (MINUTEUR)
