@@ -43,6 +43,54 @@
     <h3 class="h3">Exercices à inclure</h3>
     <div id="exerciseList" class="checklist"></div>
 
+    <h3 class="h3">Ajouter un exercice</h3>
+<div class="grid">
+  <label>Nom
+    <input id="exName" type="text" placeholder="ex: double unders" />
+  </label>
+
+  <label>Équipement
+    <select id="exEquipment">
+      <option value="aucun">Aucun</option>
+      <option value="corde">Corde à sauter</option>
+      <option value="punching_bag">Punching bag</option>
+    </select>
+  </label>
+
+  <label>Niveau
+    <select id="exLevel">
+      <option value="simple">Simple</option>
+      <option value="moyen">Moyen</option>
+      <option value="avance">Avancé</option>
+    </select>
+  </label>
+</div>
+
+<div class="row">
+  <button id="addExerciseBtn" class="btn secondary">Ajouter</button>
+</div>
+
+    <h3 class="h3">Filtrer</h3>
+<div class="grid">
+  <label>Équipement
+    <select id="filterEquipment">
+      <option value="all">Tous</option>
+      <option value="aucun">Aucun</option>
+      <option value="corde">Corde à sauter</option>
+      <option value="punching_bag">Punching bag</option>
+    </select>
+  </label>
+  <label>Niveau
+    <select id="filterLevel">
+      <option value="all">Tous</option>
+      <option value="simple">Simple</option>
+      <option value="moyen">Moyen</option>
+      <option value="avance">Avancé</option>
+    </select>
+  </label>
+</div>
+
+
     <div class="row">
       <button id="saveBtn" class="btn secondary">Sauver</button>
       <button id="resetBtn" class="btn ghost">Réinitialiser</button>
