@@ -216,6 +216,36 @@ function updateUI() {
  * Construit la liste à cocher dans la vue Réglages.
  * On l'appelle au chargement + quand on recharge les settings.
  */
+
+// 1) Traduction des labels (présentation)
+function equipmentLabel(v) {
+  if (v === "corde") return "Corde à sauter";
+  if (v === "punching_bag") return "Punching bag";
+  if (v === "aucun") return "Sans équipement";
+  return v;
+}
+
+function levelLabel(v) {
+  if (v === "simple") return "Simple";
+  if (v === "moyen") return "Moyen";
+  if (v === "avance") return "Avancé";
+  return v;
+}
+
+// 2) Filtrage pour l'affichage (UI)
+function getFilteredExercises() {
+  const eq = el.filterEquipment ? el.filterEquipment.value : "all";
+  const lvl = el.filterLevel ? el.filterLevel.value : "all";
+
+  return exercisesState.filter(ex => {
+    if (eq !== "all" && ex.equipment !== eq) return false;
+    if (lvl !== "all" && ex.level !== lvl) return false;
+    return true;
+  });
+}
+
+// 3) Rendu de la checklist (utilise les helpers ci-dessus)
+
 function renderExerciseChecklist() {
   if (!el.exerciseList) return;
   el.exerciseList.innerHTML = "";
