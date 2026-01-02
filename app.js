@@ -604,6 +604,8 @@ function init() {
   // Charger settings au lancement
   const s = loadSettings();
   settingsToUI(s);
+  renderExerciseChecklist();
+
 
   // Vues: on commence par Réglages
   showSettings();
