@@ -21,12 +21,17 @@
  ************************/
 
 // Liste d'exercices par défaut (avec "enabled" pour la checklist)
+function uid() {
+  return `ex_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
 const DEFAULT_EXERCISES = [
-  { name: "base", enabled: true },
-  { name: "side straddle", enabled: true },
-  { name: "ciseaux", enabled: true },
-  { name: "boxer", enabled: true }
+  { id: uid(), name: "base", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "side straddle", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "ciseaux", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "boxer", enabled: true, equipment: "corde", level: "simple" }
 ];
+
 
 // Réglages par défaut
 const DEFAULTS = {
@@ -78,6 +83,15 @@ const el = {
   skipBtn: document.getElementById("skipBtn"),
   stopBtn: document.getElementById("stopBtn"),
   backBtn: document.getElementById("backBtn")
+
+  // Ajouts exercise
+  exName: document.getElementById("exName"),
+  exEquipment: document.getElementById("exEquipment"),
+  exLevel: document.getElementById("exLevel"),
+  addExerciseBtn: document.getElementById("addExerciseBtn"),
+  
+  filterEquipment: document.getElementById("filterEquipment"),
+  filterLevel: document.getElementById("filterLevel"),
 };
 
 /***********************
@@ -203,21 +217,68 @@ function updateUI() {
  * On l'appelle au chargement + quand on recharge les settings.
  */
 function renderExerciseChecklist() {
+  if (!el.exerciseList) return;
   el.exerciseList.innerHTML = "";
 
-  exercisesState.forEach((ex, i) => {
-    const wrap = document.createElement("label");
-    wrap.className = "check";
+  const list = getFilteredExercises();
 
-    // IMPORTANT: on met data-i pour savoir quel item on modifie
-    wrap.innerHTML = `
-      <input type="checkbox" ${ex.enabled ? "checked" : ""} data-i="${i}" />
-      <span>${ex.name}</span>
-    `;
+  if (!list.length) {
+    el.exerciseList.innerHTML = `<p class="muted">Aucun exercice pour ce filtre.</p>`;
+    return;
+  }
 
-    el.exerciseList.appendChild(wrap);
-  });
+  // groupement: equipment -> level -> items
+  const groups = new Map();
+  for (const ex of list) {
+    if (!groups.has(ex.equipment)) groups.set(ex.equipment, new Map());
+    const byLevel = groups.get(ex.equipment);
+    if (!byLevel.has(ex.level)) byLevel.set(ex.level, []);
+    byLevel.get(ex.level).push(ex);
+  }
+
+  // Ordre souhaité (optionnel)
+  const equipmentOrder = ["aucun", "corde", "punching_bag"];
+  const levelOrder = ["simple", "moyen", "avance"];
+
+  const equipments = [...groups.keys()].sort(
+    (a,b) => (equipmentOrder.indexOf(a) - equipmentOrder.indexOf(b)) || a.localeCompare(b)
+  );
+
+  for (const eq of equipments) {
+    const eqTitle = document.createElement("h4");
+    eqTitle.className = "h4";
+    eqTitle.textContent = equipmentLabel(eq);
+    el.exerciseList.appendChild(eqTitle);
+
+    const byLevel = groups.get(eq);
+    const levels = [...byLevel.keys()].sort(
+      (a,b) => (levelOrder.indexOf(a) - levelOrder.indexOf(b)) || a.localeCompare(b)
+    );
+
+    for (const lvl of levels) {
+      const lvlTitle = document.createElement("div");
+      lvlTitle.className = "group-subtitle";
+      lvlTitle.textContent = levelLabel(lvl);
+      el.exerciseList.appendChild(lvlTitle);
+
+      const wrap = document.createElement("div");
+      wrap.className = "checklist";
+      el.exerciseList.appendChild(wrap);
+
+      for (const ex of byLevel.get(lvl)) {
+        const row = document.createElement("label");
+        row.className = "check";
+        row.innerHTML = `
+          <input type="checkbox" ${ex.enabled ? "checked" : ""} data-id="${ex.id}">
+          <span>${ex.name}</span>
+          <span class="pill">${equipmentLabel(ex.equipment)} · ${levelLabel(ex.level)}</span>
+        `;
+        wrap.appendChild(row);
+      }
+    }
+  }
 }
+
 
 /**
  * Liste des exercices cochés (names).
@@ -225,8 +286,9 @@ function renderExerciseChecklist() {
  * (sinon, on tombe sur une liste vide -> crash du random).
  */
 function enabledExercises() {
-  const enabled = exercisesState.filter(e => e.enabled).map(e => e.name);
-  return enabled.length ? enabled : exercisesState.map(e => e.name);
+  const enabled = exercisesState.filter(e => e.enabled);
+  // si rien n'est coché, fallback = tout (sinon random sur vide)
+  return enabled.length ? enabled : exercisesState;
 }
 
 /**
@@ -236,7 +298,7 @@ function enabledExercises() {
 function pickExerciseWithReplacement() {
   const list = enabledExercises();
   const idx = Math.floor(Math.random() * list.length);
-  return list[idx];
+  return list[idx].name;
 }
 
 /***********************
@@ -255,7 +317,7 @@ function initAudio() {
  * Bip court et discret.
  * On utilise un oscillateur -> pas besoin de fichiers audio.
  */
-function beep({ freq = 880, durationMs = 90, volume = 0.1 } = {}) {
+function beep({ freq = 880, durationMs = 90, volume = 0.5 } = {}) {
   if (!audioCtx) return;
 
   const t0 = audioCtx.currentTime;
@@ -316,9 +378,12 @@ function normalizeExercises(arr) {
     return DEFAULT_EXERCISES.map(x => ({ ...x }));
   }
   return arr.map(e => ({
-    name: String(e.name ?? ""),
-    enabled: !!e.enabled
-  })).filter(e => e.name.trim().length > 0);
+    id: String(e.id ?? uid()),
+    name: String(e.name ?? "").trim(),
+    enabled: !!e.enabled,
+    equipment: String(e.equipment ?? "aucun"),
+    level: String(e.level ?? "simple")
+  })).filter(e => e.name.length > 0);
 }
 
 function loadSettings() {
@@ -641,12 +706,47 @@ function init() {
 
   // Checklist: écouter les changements (event delegation)
   el.exerciseList.addEventListener("change", (ev) => {
-    const t = ev.target;
-    if (!(t instanceof HTMLInputElement)) return;
-    const i = Number(t.dataset.i);
-    if (!Number.isInteger(i) || !exercisesState[i]) return;
-    exercisesState[i].enabled = t.checked;
+  const t = ev.target;
+  if (!(t instanceof HTMLInputElement)) return;
+  const id = t.dataset.id;
+  if (!id) return;
+
+  const ex = exercisesState.find(x => x.id === id);
+  if (!ex) return;
+
+  ex.enabled = t.checked;
+  saveSettings(settingsFromUI()); // optionnel: autosave
+});
+
+  // Ajouter un exercices
+  el.addExerciseBtn.addEventListener("click", () => {
+  const name = (el.exName.value || "").trim();
+  const equipment = el.exEquipment.value;
+  const level = el.exLevel.value;
+
+  if (!name) return; // tu peux afficher un message si tu veux
+
+  // éviter doublons exacts (mauvaise idée de laisser gonfler sans contrôle)
+  const exists = exercisesState.some(e => e.name.toLowerCase() === name.toLowerCase()
+    && e.equipment === equipment && e.level === level);
+  if (exists) return;
+
+  exercisesState.push({
+    id: uid(),
+    name,
+    enabled: true,
+    equipment,
+    level
   });
+
+  // reset champ
+  el.exName.value = "";
+
+  // sauvegarde + rerender
+  saveSettings(settingsFromUI());
+  renderExerciseChecklist();
+});
+
 
   /*********
    * Events Chrono
