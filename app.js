@@ -45,7 +45,7 @@ const DEFAULTS = {
 };
 
 // Clé de stockage local
-const LS_KEY = "interval_timer_settings_v2";
+const LS_KEY = "interval_timer_settings_v3";
 
 /***********************
  * RÉFÉRENCES UI (DOM)
