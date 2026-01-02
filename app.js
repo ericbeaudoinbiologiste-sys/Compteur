@@ -82,7 +82,7 @@ const el = {
   pauseBtn: document.getElementById("pauseBtn"),
   skipBtn: document.getElementById("skipBtn"),
   stopBtn: document.getElementById("stopBtn"),
-  backBtn: document.getElementById("backBtn")
+  backBtn: document.getElementById("backBtn"),
 
   // Ajouts exercise
   exName: document.getElementById("exName"),
