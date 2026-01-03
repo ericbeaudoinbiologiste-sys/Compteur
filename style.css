@@ -154,4 +154,20 @@ body.phase-done .card.big { background: rgba(148,163,184,.35); box-shadow:none; 
 }
 .check { justify-content: space-between; }
 
+/* En mode chrono: on ne voit QUE la carte */
+body.timer-only header.top,
+body.timer-only #viewSettings {
+  display: none !important;
+}
+
+/* En mode chrono: la carte prend toute la largeur, sans marge inutile */
+body.timer-only .wrap {
+  max-width: 900px;
+  padding: 12px;
+}
+
+body.timer-only .card.big {
+  margin: 0;
+}
+
 
