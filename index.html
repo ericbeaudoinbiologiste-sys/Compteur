@@ -8,144 +8,153 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
 </head>
-  <body>
-<main class="wrap">
-  <header class="top">
-    <h1>Minuteur d’entraînement</h1>
-    <p class="sub">Intervalles + exercices aléatoires</p>
-  </header>
 
-  <section id="viewPresets" class="card">
-  <!-- VUE 1 : MODELE -->  
-  <h2>Mes modèles</h2>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <h1>Minuteur d’entraînement</h1>
+      <p class="sub">Intervalles + exercices aléatoires</p>
+    </header>
 
-  <div id="presetList" class="presetList"></div>
+    <!-- VUE 1 : MODÈLES -->
+    <section id="viewPresets" class="card hidden">
+      <h2>Mes modèles</h2>
 
-  <div class="row">
-    <button id="newPresetBtn" class="btn primary">Nouveau modèle</button>
-  </div>
-</section>
+      <div id="presetList" class="presetList"></div>
 
-
-  <!-- VUE 2 : RÉGLAGES -->
-  <section id="viewSettings" class="card">
-    <label>Nom du modèle
-    <input id="presetName" type="text" placeholder="ex: Corde - 30/15" />
-    </label>
-    
-
-
-    <h2>Réglages</h2>
-
-    <div class="grid">
-      <label>Préparation (s)
-        <input id="prepSec" type="number" min="0" max="3600" step="1" />
-      </label>
-      <label>Travail (s)
-        <input id="workSec" type="number" min="1" max="3600" step="1" />
-      </label>
-      <label>Repos (s)
-        <input id="restSec" type="number" min="0" max="3600" step="1" />
-      </label>
-      <label>Retour au calme (s)
-        <input id="cooldownSec" type="number" min="0" max="3600" step="1" />
-      </label>
-      <label>Intervalles (Travail+Repos)
-        <input id="rounds" type="number" min="1" max="200" step="1" />
-      </label>
-      <label>Bips dernières secondes
-        <input id="beepLast" type="number" min="0" max="10" step="1" />
-      </label>
-    </div>
-
-    <h3 class="h3">Exercices à inclure</h3>
-    <div id="exerciseList" class="checklist"></div>
-
-    <h3 class="h3">Ajouter un exercice</h3>
-<div class="grid">
-  <label>Nom
-    <input id="exName" type="text" placeholder="ex: double unders" />
-  </label>
-
-  <label>Équipement
-    <select id="exEquipment">
-      <option value="aucun">Aucun</option>
-      <option value="corde">Corde à sauter</option>
-      <option value="punching_bag">Punching bag</option>
-    </select>
-  </label>
-
-  <label>Niveau
-    <select id="exLevel">
-      <option value="simple">Simple</option>
-      <option value="moyen">Moyen</option>
-      <option value="avance">Avancé</option>
-    </select>
-  </label>
-</div>
-
-<div class="row">
-  <button id="addExerciseBtn" class="btn secondary">Ajouter</button>
-</div>
-
-    <h3 class="h3">Filtrer</h3>
-<div class="grid">
-  <label>Équipement
-    <select id="filterEquipment">
-      <option value="all">Tous</option>
-      <option value="aucun">Aucun</option>
-      <option value="corde">Corde à sauter</option>
-      <option value="punching_bag">Punching bag</option>
-    </select>
-  </label>
-  <label>Niveau
-    <select id="filterLevel">
-      <option value="all">Tous</option>
-      <option value="simple">Simple</option>
-      <option value="moyen">Moyen</option>
-      <option value="avance">Avancé</option>
-    </select>
-  </label>
-</div>
-
-
-<div class="row">
-  <button id="savePresetBtn" class="btn primary">Enregistrer le modèle</button>
-  <button id="usePresetBtn" class="btn secondary">Utiliser ce modèle</button>
-  <button id="backToPresetsBtn" class="btn ghost">Retour</button>
-</div>
-  </section>
-
-  <!-- VUE 3 : CHRONO -->
-  <section id="viewTimer" class="card big hidden">
-    <div class="status">
-      <div>
-        <div class="label">Phase</div>
-        <div id="phaseLabel" class="value">—</div>
+      <div class="row">
+        <button id="newPresetBtn" class="btn primary">Nouveau modèle</button>
       </div>
-      <div>
-        <div class="label">Intervalles</div>
-        <div id="roundLabel" class="value">—</div>
+    </section>
+
+    <!-- VUE 2 : RÉGLAGES / ÉDITION DE MODÈLE -->
+    <section id="viewSettings" class="card hidden">
+      <h2>Réglages du modèle</h2>
+
+      <div class="grid">
+        <label>Nom du modèle
+          <input id="presetName" type="text" placeholder="ex: Corde - 30/15" />
+        </label>
       </div>
-    </div>
 
-    <div class="timer" id="timeLabel">00:00</div>
+      <div class="row">
+        <button id="savePresetBtn" class="btn primary">Enregistrer le modèle</button>
+        <button id="usePresetBtn" class="btn secondary">Utiliser ce modèle</button>
+        <button id="backToPresetsBtn" class="btn ghost">Retour</button>
+      </div>
 
-    <div class="exercise">
-      <div class="label">Exercice</div>
-      <div id="exerciseLabel" class="exerciseName">—</div>
-    </div>
+      <div class="grid">
+        <label>Préparation (s)
+          <input id="prepSec" type="number" min="0" max="3600" step="1" />
+        </label>
+        <label>Travail (s)
+          <input id="workSec" type="number" min="1" max="3600" step="1" />
+        </label>
+        <label>Repos (s)
+          <input id="restSec" type="number" min="0" max="3600" step="1" />
+        </label>
+        <label>Retour au calme (s)
+          <input id="cooldownSec" type="number" min="0" max="3600" step="1" />
+        </label>
+        <label>Intervalles (Travail + Repos)
+          <input id="rounds" type="number" min="1" max="200" step="1" />
+        </label>
+        <label>Bips dernières secondes
+          <input id="beepLast" type="number" min="0" max="10" step="1" />
+        </label>
+      </div>
 
-    <div class="controls">
-      <button id="startBtn" class="btn primary">Démarrer</button>
-      <button id="pauseBtn" class="btn secondary" disabled>Pause</button>
-      <button id="skipBtn" class="btn ghost" disabled>Passer</button>
-      <button id="stopBtn" class="btn danger" disabled>Stop</button>
-      <button id="backBtn" class="btn ghost">Réglages</button>
-    </div>
-  </section>
-</main>
+      <h3 class="h3">Filtrer les exercices</h3>
+      <div class="grid">
+        <label>Équipement
+          <select id="filterEquipment">
+            <option value="all">Tous</option>
+            <option value="aucun">Aucun</option>
+            <option value="corde">Corde à sauter</option>
+            <option value="punching_bag">Punching bag</option>
+          </select>
+        </label>
 
+        <label>Niveau
+          <select id="filterLevel">
+            <option value="all">Tous</option>
+            <option value="simple">Simple</option>
+            <option value="moyen">Moyen</option>
+            <option value="avance">Avancé</option>
+          </select>
+        </label>
+      </div>
+
+      <h3 class="h3">Exercices à inclure</h3>
+      <div id="exerciseList" class="checklist"></div>
+
+      <h3 class="h3">Ajouter un exercice</h3>
+      <div class="grid">
+        <label>Nom
+          <input id="exName" type="text" placeholder="ex: double unders" />
+        </label>
+
+        <label>Équipement
+          <select id="exEquipment">
+            <option value="aucun">Aucun</option>
+            <option value="corde">Corde à sauter</option>
+            <option value="punching_bag">Punching bag</option>
+          </select>
+        </label>
+
+        <label>Niveau
+          <select id="exLevel">
+            <option value="simple">Simple</option>
+            <option value="moyen">Moyen</option>
+            <option value="avance">Avancé</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="row">
+        <button id="addExerciseBtn" class="btn secondary">Ajouter</button>
+      </div>
+
+      <!-- (Optionnel) Ces boutons existent dans ton app.js, mais ne sont plus nécessaires avec les presets.
+           Si tu veux les garder, assure-toi que les IDs existent dans app.js.
+           Sinon, enlève aussi les refs + listeners dans app.js.
+      -->
+      <div class="row" style="display:none">
+        <button id="saveBtn" class="btn primary">Sauver</button>
+        <button id="resetBtn" class="btn ghost">Réinitialiser</button>
+        <button id="goTimerBtn" class="btn secondary">Aller au chrono</button>
+      </div>
+    </section>
+
+    <!-- VUE 3 : CHRONO -->
+    <section id="viewTimer" class="card big hidden">
+      <div class="status">
+        <div>
+          <div class="label">Phase</div>
+          <div id="phaseLabel" class="value">—</div>
+        </div>
+        <div>
+          <div class="label">Intervalles</div>
+          <div id="roundLabel" class="value">—</div>
+        </div>
+      </div>
+
+      <div class="timer" id="timeLabel">00:00</div>
+
+      <div class="exercise">
+        <div class="label">Exercice</div>
+        <div id="exerciseLabel" class="exerciseName">—</div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" class="btn primary">Démarrer</button>
+        <button id="pauseBtn" class="btn secondary" disabled>Pause</button>
+        <button id="skipBtn" class="btn ghost" disabled>Passer</button>
+        <button id="stopBtn" class="btn danger" disabled>Stop</button>
+        <button id="backBtn" class="btn ghost">Réglages</button>
+      </div>
+    </section>
+  </main>
 
   <script src="app.js"></script>
 </body>
