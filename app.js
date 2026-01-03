@@ -74,12 +74,67 @@ function uidPreset() {
   return `p_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
-function loadPresetStore() { ... }
-function savePresetStore(store) { ... }
-function getPresetById(id) { ... }
-function upsertPreset(preset) { ... }
-function setLastPreset(id) { ... }
-function ensureDefaultPresetIfEmpty() { ... }
+function loadPresetStore() {
+  try {
+    const raw = localStorage.getItem(PRESETS_KEY);
+    if (!raw) return { presets: [], lastPresetId: null };
+    const obj = JSON.parse(raw);
+    return {
+      presets: Array.isArray(obj.presets) ? obj.presets : [],
+      lastPresetId: obj.lastPresetId ?? null
+    };
+  } catch {
+    return { presets: [], lastPresetId: null };
+  }
+}
+
+function savePresetStore(store) {
+  localStorage.setItem(PRESETS_KEY, JSON.stringify(store));
+}
+
+function getPresetById(id) {
+  const store = loadPresetStore();
+  return store.presets.find(p => p.id === id) || null;
+}
+
+function upsertPreset(preset) {
+  const store = loadPresetStore();
+  const i = store.presets.findIndex(p => p.id === preset.id);
+  if (i >= 0) store.presets[i] = preset;
+  else store.presets.unshift(preset);
+  store.lastPresetId = preset.id;
+  savePresetStore(store);
+}
+
+function setLastPreset(id) {
+  const store = loadPresetStore();
+  store.lastPresetId = id;
+  savePresetStore(store);
+}
+
+function ensureDefaultPresetIfEmpty() {
+  const store = loadPresetStore();
+  if (store.presets.length) return;
+
+  const defaultPreset = {
+    id: uidPreset(),
+    name: "Défaut",
+    settings: {
+      prepSec: DEFAULTS.prepSec,
+      workSec: DEFAULTS.workSec,
+      restSec: DEFAULTS.restSec,
+      cooldownSec: DEFAULTS.cooldownSec,
+      rounds: DEFAULTS.rounds,
+      beepLast: DEFAULTS.beepLast,
+      exercises: DEFAULT_EXERCISES.map(x => ({ ...x }))
+    }
+  };
+
+  store.presets = [defaultPreset];
+  store.lastPresetId = defaultPreset.id;
+  savePresetStore(store);
+}
+
 
 
 /***********************
@@ -608,9 +663,16 @@ function settingsFromUI() {
     cooldownSec: clampInt(el.cooldownSec.value, 0, 3600),
     rounds: clampInt(el.rounds.value, 1, 200),
     beepLast: clampInt(el.beepLast.value, 0, 10),
-    exercises: exercisesState.map(e => ({ name: e.name, enabled: e.enabled }))
+    exercises: exercisesState.map(e => ({
+      id: e.id,
+      name: e.name,
+      enabled: e.enabled,
+      equipment: e.equipment,
+      level: e.level
+    }))
   };
 }
+
 
 function settingsToUI(s) {
   // Durées + paramètres
@@ -883,14 +945,56 @@ function init() {
   renderExerciseChecklist();
 
 
-  // Vues: on commence par Réglages
-  showSettings();
+  // Presets: s'assurer qu'il y a au moins un modèle puis afficher la liste
+  ensureDefaultPresetIfEmpty();
+  renderPresetList();
+  showPresets();
 
   // État initial
   phase = "idle";
   remaining = 0;
   updateUI();
   setButtons({ running: false, paused: false });
+
+  /*********
+ * Events Modèles (Presets)
+ *********/
+
+// Clicks dans la liste (Utiliser / Modifier)
+el.presetList.addEventListener("click", (ev) => {
+  const btn = ev.target.closest("button");
+  if (!btn) return;
+
+  const act = btn.dataset.act;
+  const id = btn.dataset.id;
+  if (!id) return;
+
+  if (act === "use") usePreset(id);
+  if (act === "edit") openPresetForEdit(id);
+});
+
+// Nouveau modèle
+el.newPresetBtn.addEventListener("click", () => openNewPreset());
+
+// Retour à la liste
+el.backToPresetsBtn.addEventListener("click", () => {
+  renderPresetList();
+  showPresets();
+});
+
+// Enregistrer le modèle (create/update)
+el.savePresetBtn.addEventListener("click", () => {
+  saveCurrentPresetFromUI();
+  renderPresetList();
+  showPresets();
+});
+
+// Utiliser depuis l'écran d'édition
+el.usePresetBtn.addEventListener("click", () => {
+  saveCurrentPresetFromUI();     // s'assure que le modèle est bien sauvegardé
+  usePreset(editingPresetId);    // puis bascule sur le chrono
+});
+
 
   /*********
    * Events Réglages
