@@ -161,11 +161,13 @@ function phaseLabelFr(p) {
  ************************/
 
 function showSettings() {
+  document.body.classList.remove("timer-only");
   el.viewSettings.classList.remove("hidden");
   el.viewTimer.classList.add("hidden");
 }
 
 function showTimer() {
+  document.body.classList.add("timer-only");
   el.viewSettings.classList.add("hidden");
   el.viewTimer.classList.remove("hidden");
 }
