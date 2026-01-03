@@ -955,6 +955,7 @@ function finish() {
  ************************/
 
 function init() {
+  console.log("NULL el:", Object.entries(el).filter(([k,v]) => v === null).map(([k]) => k));
   // Charger settings au lancement
   const s = loadSettings();
   settingsToUI(s);
