@@ -127,6 +127,8 @@ let beepLast = DEFAULTS.beepLast;
 
 // Exercices (état de la checklist en mémoire)
 let exercisesState = DEFAULT_EXERCISES.map(x => ({ ...x }));
+let nextExercise = "—";
+
 
 /***********************
  * UTILITAIRES
@@ -219,7 +221,14 @@ function updateUI() {
   el.timeLabel.textContent = fmtTime(remaining);
 
   // Exercice seulement en phase work
-  el.exerciseLabel.textContent = (phase === "work") ? currentExercise : "—";
+  if (phase === "work") {
+  el.exerciseLabel.textContent = currentExercise;
+} else if (phase === "rest") {
+  el.exerciseLabel.textContent = `Next – ${nextExercise}`;
+} else {
+  el.exerciseLabel.textContent = "—";
+}
+
 
   // Affichage intervalles
   if (phase === "idle") el.roundLabel.textContent = "—";
@@ -366,7 +375,7 @@ function initAudio() {
  * Bip court et discret.
  * On utilise un oscillateur -> pas besoin de fichiers audio.
  */
-function beep({ freq = 880, durationMs = 90, volume = 0.5 } = {}) {
+function beep({ freq = 880, durationMs = 90, volume = 0.12 } = {}) {
   if (!audioCtx) return;
 
   const t0 = audioCtx.currentTime;
@@ -631,39 +640,54 @@ function transitionNext() {
   if (phase === "prep") {
     phase = "work";
     roundIndex = 1;
+    // Si un prochain exercice a déjà été choisi (pendant le repos), on l'utilise.
+    if (nextExercise && nextExercise !== "—") {
+    currentExercise = nextExercise;
+    } else {
     currentExercise = pickExerciseWithReplacement();
+    }
+    nextExercise = "—"; // on le vide, il sera recalculé au prochain repos
+
     remaining = s.workSec;
     return;
   }
 
-  if (phase === "work") {
-    // Après un work: repos si défini
-    if (s.restSec > 0) {
-      phase = "rest";
-      remaining = s.restSec;
-      return;
-    }
+ if (phase === "work") {
+  // Après un work : repos si défini
+  if (s.restSec > 0) {
+    // On prépare l'exercice du prochain "work" pendant le repos (tirage avec remise)
+    nextExercise = pickExerciseWithReplacement();
 
-    // Pas de repos -> enchaîner ou finir
-    if (roundIndex < roundsTotal) {
-      phase = "work";
-      roundIndex += 1;
-      currentExercise = pickExerciseWithReplacement();
-      remaining = s.workSec;
-      return;
-    }
-
-    // Fin des rounds -> cooldown ou done
-    if (s.cooldownSec > 0) {
-      phase = "cooldown";
-      remaining = s.cooldownSec;
-      return;
-    }
-
-    phase = "done";
-    finish();
+    phase = "rest";
+    remaining = s.restSec;
     return;
   }
+
+  // Pas de repos -> enchaîner ou finir
+  if (roundIndex < roundsTotal) {
+    phase = "work";
+    roundIndex += 1;
+
+    // Pas de phase repos pour préparer "next", donc on choisit maintenant
+    currentExercise = pickExerciseWithReplacement();
+    nextExercise = "—";
+
+    remaining = s.workSec;
+    return;
+  }
+
+  // Fin des rounds -> cooldown ou done
+  if (s.cooldownSec > 0) {
+    phase = "cooldown";
+    remaining = s.cooldownSec;
+    return;
+  }
+
+  phase = "done";
+  finish();
+  return;
+}
+
 
   if (phase === "rest") {
     // Après repos: work suivant ou fin
