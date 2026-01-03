@@ -26,10 +26,27 @@ function uid() {
 }
 
 const DEFAULT_EXERCISES = [
-  { id: uid(), name: "base", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "side straddle", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "ciseaux", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "boxer", enabled: true, equipment: "corde", level: "simple" }
+  { id: uid(), name: "Base", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "Side straddle", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "ciseaux", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "Genoux", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Course", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Sur 1 pied", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Side-swing", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "360", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "360-Entre les jambes", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Croisé-base", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Croisé-boxer", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Croisé-course", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Happy feet", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "boxer", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "Entre les jambes", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "X-motion", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Shuffle", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "Pyramide", enabled: true, equipment: "corde", level: "moyen" },
+  { id: uid(), name: "Double-unders", enabled: true, equipment: "corde", level: "moyen" },
+  
+  
 ];
 
 
