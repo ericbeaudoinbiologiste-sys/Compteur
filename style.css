@@ -65,14 +65,14 @@ input:focus{border-color: rgba(56,189,248,.45); box-shadow: 0 0 0 3px rgba(56,18
 
 .timer{
   font-variant-numeric: tabular-nums;
-  font-size: 72px;
+  font-size: 64px;
   font-weight: 800;
   text-align:center;
   margin: 12px 0;
 }
 
-.exercise{margin: 8px 0 14px 0; text-align:center;}
-.exerciseName{font-size:22px; font-weight:700; color:#e2e8f0;}
+.exercise{margin: 6px 0 10px 0; text-align:center;}
+.exerciseName{font-size:72px; font-weight:700; color:#e2e8f0;}
 
 .controls{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px;}
 .btn{
