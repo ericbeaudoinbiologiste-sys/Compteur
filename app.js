@@ -158,9 +158,9 @@ const el = {
   exerciseList: document.getElementById("exerciseList"),
 
   // Boutons réglages
-  saveBtn: document.getElementById("saveBtn"),
-  resetBtn: document.getElementById("resetBtn"),
-  goTimerBtn: document.getElementById("goTimerBtn"),
+  // saveBtn: document.getElementById("saveBtn"),
+  // resetBtn: document.getElementById("resetBtn"),
+  // goTimerBtn: document.getElementById("goTimerBtn"),
 
   // Affichage chrono
   phaseLabel: document.getElementById("phaseLabel"),
@@ -1018,23 +1018,29 @@ el.usePresetBtn.addEventListener("click", () => {
    *********/
 
   // Sauver
-  el.saveBtn.addEventListener("click", () => {
-    const s2 = settingsFromUI();
-    saveSettings(s2);
-  });
+  // if (el.saveBtn) {
+  // el.saveBtn.addEventListener("click", () => {
+  //   const s2 = settingsFromUI();
+  //   saveSettings(s2);
+  // });
+}
 
   // Réinitialiser
-  el.resetBtn.addEventListener("click", () => {
-    saveSettings({ ...DEFAULTS, exercises: DEFAULT_EXERCISES });
-    settingsToUI({ ...DEFAULTS, exercises: DEFAULT_EXERCISES });
-  });
+//   if (el.resetBtn) {
+//   el.resetBtn.addEventListener("click", () => {
+//     saveSettings({ ...DEFAULTS, exercises: DEFAULT_EXERCISES });
+//     settingsToUI({ ...DEFAULTS, exercises: DEFAULT_EXERCISES });
+//   });
+// }
 
   // Aller au chrono (page 2)
-  el.goTimerBtn.addEventListener("click", () => {
-    const s2 = settingsFromUI();
-    saveSettings(s2);
-    showTimer();
-  });
+  // if (el.goTimerBtn) {
+//   el.goTimerBtn.addEventListener("click", () => {
+//     const s2 = settingsFromUI();
+//     saveSettings(s2);
+//     showTimer();
+//   });
+// }
 
   // Checklist: écouter les changements (event delegation)
   el.exerciseList.addEventListener("change", (ev) => {
