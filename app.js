@@ -412,14 +412,30 @@ function usePreset(presetId) {
   const p = getPresetById(presetId);
   if (!p) return;
 
-  // Mettre l'UI et l'état exercices à jour
+  // IMPORTANT: remettre le minuteur à zéro (sinon Start peut rester bloqué/disabled)
+  clearInterval(timerId);
+  timerId = null;
+  isRunning = false;
+  isPaused = false;
+  phase = "idle";
+  remaining = 0;
+  roundsTotal = 0;
+  roundIndex = 0;
+  currentExercise = "—";
+  nextExercise = "—";
+
+  // Charger les settings du modèle dans l'UI
   settingsToUI(p.settings);
 
-  // garder trace du dernier choisi
+  // (optionnel mais propre) garder trace du dernier choisi
   setLastPreset(p.id);
 
+  // Afficher chrono + remettre l'UI des boutons dans un état "prêt à démarrer"
   showTimer();
+  setButtons({ running: false, paused: false });
+  updateUI();
 }
+
 
 
 /***********************
@@ -1074,7 +1090,11 @@ el.usePresetBtn.addEventListener("click", () => {
 
   // Retour aux réglages
   // (Option simple: on autorise même si session en cours)
-  el.backBtn.addEventListener("click", () => showSettings());
+  el.backBtn.addEventListener("click", () => {
+  stopSession();        // remet tout à zéro + libère wakelock
+  renderPresetList();
+  showPresets();
+});
 
   /*********
    * Service Worker
