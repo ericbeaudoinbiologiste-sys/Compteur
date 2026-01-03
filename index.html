@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Minuteur Intervalles</title>
+  <title>Minuteur Beaudoin</title>
   <meta name="theme-color" content="#0f172a" />
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
@@ -15,8 +15,26 @@
     <p class="sub">Intervalles + exercices aléatoires</p>
   </header>
 
-  <!-- VUE 1 : RÉGLAGES -->
+  <section id="viewPresets" class="card">
+  <!-- VUE 1 : MODELE -->  
+  <h2>Mes modèles</h2>
+
+  <div id="presetList" class="presetList"></div>
+
+  <div class="row">
+    <button id="newPresetBtn" class="btn primary">Nouveau modèle</button>
+  </div>
+</section>
+
+
+  <!-- VUE 2 : RÉGLAGES -->
   <section id="viewSettings" class="card">
+    <label>Nom du modèle
+    <input id="presetName" type="text" placeholder="ex: Corde - 30/15" />
+    </label>
+    
+
+
     <h2>Réglages</h2>
 
     <div class="grid">
@@ -91,14 +109,14 @@
 </div>
 
 
-    <div class="row">
-      <button id="saveBtn" class="btn secondary">Sauver</button>
-      <button id="resetBtn" class="btn ghost">Réinitialiser</button>
-      <button id="goTimerBtn" class="btn primary">Aller au chrono</button>
-    </div>
+<div class="row">
+  <button id="savePresetBtn" class="btn primary">Enregistrer le modèle</button>
+  <button id="usePresetBtn" class="btn secondary">Utiliser ce modèle</button>
+  <button id="backToPresetsBtn" class="btn ghost">Retour</button>
+</div>
   </section>
 
-  <!-- VUE 2 : CHRONO -->
+  <!-- VUE 3 : CHRONO -->
   <section id="viewTimer" class="card big hidden">
     <div class="status">
       <div>
