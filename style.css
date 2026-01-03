@@ -166,6 +166,18 @@ body.timer-only .wrap {
   padding: 12px;
 }
 
+/* Style de la liste de modèle
+.presetList { display:flex; flex-direction:column; gap:10px; margin: 10px 0 12px; }
+.presetItem {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px; border:1px solid var(--border); border-radius:12px;
+  background: rgba(2,6,23,.35);
+}
+.presetName { font-weight:800; }
+.presetMeta { color: var(--muted); font-size:12px; margin-top:2px; }
+.presetActions { display:flex; gap:8px; flex-wrap:wrap; }
+
+
 body.timer-only .card.big {
   margin: 0;
 }
