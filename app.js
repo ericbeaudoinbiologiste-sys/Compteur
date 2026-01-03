@@ -65,12 +65,31 @@ const DEFAULTS = {
 const LS_KEY = "interval_timer_settings_v3";
 
 /***********************
+ * PRESETS (modèles) — localStorage
+ ************************/
+
+const PRESETS_KEY = "interval_timer_presets_v1";
+
+function uidPreset() {
+  return `p_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
+function loadPresetStore() { ... }
+function savePresetStore(store) { ... }
+function getPresetById(id) { ... }
+function upsertPreset(preset) { ... }
+function setLastPreset(id) { ... }
+function ensureDefaultPresetIfEmpty() { ... }
+
+
+/***********************
  * RÉFÉRENCES UI (DOM)
  ************************/
 const el = {
   // Vues
   viewSettings: document.getElementById("viewSettings"),
   viewTimer: document.getElementById("viewTimer"),
+  viewPresets: document.getElementById("viewPresets"),
 
   // Inputs réglages
   prepSec: document.getElementById("prepSec"),
@@ -109,6 +128,16 @@ const el = {
   
   filterEquipment: document.getElementById("filterEquipment"),
   filterLevel: document.getElementById("filterLevel"),
+
+  // liste presets
+  presetList: document.getElementById("presetList"),
+  newPresetBtn: document.getElementById("newPresetBtn"),
+
+  // édition preset
+  presetName: document.getElementById("presetName"),
+  savePresetBtn: document.getElementById("savePresetBtn"),
+  usePresetBtn: document.getElementById("usePresetBtn"),
+  backToPresetsBtn: document.getElementById("backToPresetsBtn"),
 };
 
 /***********************
@@ -124,6 +153,9 @@ let roundsTotal = 0;      // # total d'intervalles (work+rest)
 let roundIndex = 0;       // index de l'intervalle de travail actuel (1..roundsTotal)
 let currentExercise = "—";// exercice affiché en phase "work"
 let beepLast = DEFAULTS.beepLast;
+
+let editingPresetId = null;
+
 
 // Exercices (état de la checklist en mémoire)
 let exercisesState = DEFAULT_EXERCISES.map(x => ({ ...x }));
@@ -162,17 +194,27 @@ function phaseLabelFr(p) {
  * UI HELPERS
  ************************/
 
+function showPresets() {
+  document.body.classList.remove("timer-only");
+  el.viewPresets.classList.remove("hidden");
+  el.viewSettings.classList.add("hidden");
+  el.viewTimer.classList.add("hidden");
+}
+
 function showSettings() {
   document.body.classList.remove("timer-only");
+  el.viewPresets.classList.add("hidden");
   el.viewSettings.classList.remove("hidden");
   el.viewTimer.classList.add("hidden");
 }
 
 function showTimer() {
   document.body.classList.add("timer-only");
+  el.viewPresets.classList.add("hidden");
   el.viewSettings.classList.add("hidden");
   el.viewTimer.classList.remove("hidden");
 }
+
 
 /**
  * Applique une classe CSS sur <body> selon la phase.
@@ -235,6 +277,95 @@ function updateUI() {
   else if (phase === "done") el.roundLabel.textContent = `${roundsTotal}/${roundsTotal}`;
   else el.roundLabel.textContent = `${Math.min(roundIndex, roundsTotal)}/${roundsTotal}`;
 }
+
+// Usage des modèles
+function presetMetaText(s) {
+  return `${s.rounds}x · ${s.workSec}/${s.restSec}s · prep ${s.prepSec}s · cool ${s.cooldownSec}s`;
+}
+
+function renderPresetList() {
+  const store = loadPresetStore();
+  el.presetList.innerHTML = "";
+
+  store.presets.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "presetItem";
+    div.innerHTML = `
+      <div>
+        <div class="presetName">${p.name}</div>
+        <div class="presetMeta">${presetMetaText(p.settings)}</div>
+      </div>
+      <div class="presetActions">
+        <button class="btn secondary" data-act="use" data-id="${p.id}">Utiliser</button>
+        <button class="btn ghost" data-act="edit" data-id="${p.id}">Modifier</button>
+      </div>
+    `;
+    el.presetList.appendChild(div);
+  });
+}
+
+
+function openPresetForEdit(presetId) {
+  const p = getPresetById(presetId);
+  if (!p) return;
+
+  editingPresetId = p.id;
+  el.presetName.value = p.name;
+
+  // Injecter settings dans l'UI existante
+  settingsToUI(p.settings);
+
+  showSettings();
+}
+
+
+function openNewPreset() {
+  editingPresetId = null;
+  el.presetName.value = "";
+
+  // partir d'un défaut propre
+  settingsToUI({
+    prepSec: DEFAULTS.prepSec,
+    workSec: DEFAULTS.workSec,
+    restSec: DEFAULTS.restSec,
+    cooldownSec: DEFAULTS.cooldownSec,
+    rounds: DEFAULTS.rounds,
+    beepLast: DEFAULTS.beepLast,
+    exercises: DEFAULT_EXERCISES.map(x => ({ ...x }))
+  });
+
+  showSettings();
+}
+
+
+function saveCurrentPresetFromUI() {
+  const name = (el.presetName.value || "").trim() || "Sans nom";
+  const settings = settingsFromUI();
+
+  const preset = {
+    id: editingPresetId || uidPreset(),
+    name,
+    settings
+  };
+
+  upsertPreset(preset);
+  editingPresetId = preset.id;
+}
+
+
+function usePreset(presetId) {
+  const p = getPresetById(presetId);
+  if (!p) return;
+
+  // Mettre l'UI et l'état exercices à jour
+  settingsToUI(p.settings);
+
+  // garder trace du dernier choisi
+  setLastPreset(p.id);
+
+  showTimer();
+}
+
 
 /***********************
  * CHECKLIST EXERCICES
