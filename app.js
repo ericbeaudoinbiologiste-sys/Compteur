@@ -422,8 +422,7 @@ function updateUI() {
   if (phase === "work") {
   el.exerciseLabel.textContent = currentExercise;
 } else if (phase === "rest") {
-  const modTxt = nextModifier ? `${nextModifier.label} · ` : "";
-  el.exerciseLabel.textContent = `Next – ${modTxt}${nextExercise}`;
+  el.exerciseLabel.textContent = `Next – ${nextExercise}`;
 } else {
   el.exerciseLabel.textContent = "—";
 }
