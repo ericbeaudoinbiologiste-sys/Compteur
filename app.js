@@ -321,6 +321,13 @@ function defaultModifiersForEquipment(eq) {
   return [];
 }
 
+function isNormalModifier(mod) {
+  if (!mod) return true;
+  const id = String(mod.id ?? "").toLowerCase();
+  const label = String(mod.label ?? "").toLowerCase();
+  return id === "normal" || label === "normal";
+}
+
 function getModifiersFromUI(eq) {
   if (eq === "corde") {
     const weighted = clampInt(el.ropeWeightedPct?.value ?? 25, 0, 100);
@@ -416,12 +423,15 @@ function setButtons({ running, paused }) {
  * -> Un seul endroit qui "reflète" l'état runtime.
  */
 function updateUI() {
-  if (el.modifierPill) {
-  if (phase === "work" && currentModifier) {
+if (el.modifierPill) {
+  const showWork = (phase === "work" && currentModifier && !isNormalModifier(currentModifier));
+  const showNext = ((phase === "rest" || phase === "prep") && nextModifier && !isNormalModifier(nextModifier));
+
+  if (showWork) {
     el.modifierPill.classList.remove("hidden");
     el.modifierPill.textContent = currentModifier.label;
     el.modifierPill.dataset.style = currentModifier.style || "neutral";
-  } else if ((phase === "rest" || phase === "prep") && nextModifier) {
+  } else if (showNext) {
     el.modifierPill.classList.remove("hidden");
     el.modifierPill.textContent = `Next: ${nextModifier.label}`;
     el.modifierPill.dataset.style = nextModifier.style || "neutral";
@@ -431,6 +441,7 @@ function updateUI() {
     el.modifierPill.dataset.style = "neutral";
   }
 }
+
 
   setPhaseClass(phase);
 
