@@ -62,6 +62,8 @@ const DEFAULTS = {
   beepLast: 3,
   exercises: DEFAULT_EXERCISES,
   sessionEquipment: "none", 
+  modifiers: defaultModifiersForEquipment("corde"), // valeur par défaut (sera remplacée selon eq)
+
 
 };
 
@@ -163,11 +165,17 @@ const el = {
   sessionEquipment: document.getElementById("sessionEquipment"),
   exerciseSection: document.getElementById("exerciseSection"),
 
+  // Modificateurs UI
+  modsRope: document.getElementById("modsRope"),
+  modsBag: document.getElementById("modsBag"),
+  ropeWeightedPct: document.getElementById("ropeWeightedPct"),
+  bagNormalPct: document.getElementById("bagNormalPct"),
+  bagSpeedPct: document.getElementById("bagSpeedPct"),
+  bagPowerPct: document.getElementById("bagPowerPct"),
+  bagTechPct: document.getElementById("bagTechPct"),
 
-  // Boutons réglages
-  // saveBtn: document.getElementById("saveBtn"),
-  // resetBtn: document.getElementById("resetBtn"),
-  // goTimerBtn: document.getElementById("goTimerBtn"),
+// Affichage modificateur
+modifierPill: document.getElementById("modifierPill"),
 
   // Affichage chrono
   phaseLabel: document.getElementById("phaseLabel"),
@@ -214,6 +222,9 @@ let remaining = 0;        // secondes restantes dans la phase courante
 let roundsTotal = 0;      // # total d'intervalles (work+rest)
 let roundIndex = 0;       // index de l'intervalle de travail actuel (1..roundsTotal)
 let currentExercise = "—";// exercice affiché en phase "work"
+let currentModifier = null; // { id, label, style }
+let nextModifier = null;    // idem
+
 let beepLast = DEFAULTS.beepLast;
 
 let editingPresetId = null;
@@ -251,6 +262,73 @@ function phaseLabelFr(p) {
     default: return "—";
   }
 }
+// Modificateurs
+function normalizeWeights(items) {
+  const list = items.map(x => ({ ...x, weight: Math.max(0, Number(x.weight) || 0) }));
+  const total = list.reduce((a,x) => a + x.weight, 0);
+  if (total <= 0) return list; // tous à 0 => tirage retournera null
+  // on garde les poids tels quels (pas besoin de forcer total=100)
+  return list;
+}
+
+function pickWeighted(items) {
+  const list = normalizeWeights(items).filter(x => x.weight > 0);
+  const total = list.reduce((a,x) => a + x.weight, 0);
+  if (!total) return null;
+
+  let r = Math.random() * total;
+  for (const it of list) {
+    r -= it.weight;
+    if (r <= 0) return it;
+  }
+  return list[list.length - 1] || null;
+}
+
+function defaultModifiersForEquipment(eq) {
+  if (eq === "corde") {
+    return [
+      { id: "normal", label: "Normal", weight: 75, style: "neutral" },
+      { id: "leste", label: "Corde lestée", weight: 25, style: "warn" }
+    ];
+  }
+  if (eq === "punching_bag") {
+    return [
+      { id: "normal", label: "Normal", weight: 40, style: "neutral" },
+      { id: "vitesse", label: "Vitesse", weight: 20, style: "info" },
+      { id: "force", label: "Force", weight: 20, style: "danger" },
+      { id: "technique", label: "Technique", weight: 20, style: "success" }
+    ];
+  }
+  return [];
+}
+
+function getModifiersFromUI(eq) {
+  if (eq === "corde") {
+    const weighted = clampInt(el.ropeWeightedPct?.value ?? 25, 0, 100);
+    return [
+      { id: "normal", label: "Normal", weight: 100 - weighted, style: "neutral" },
+      { id: "leste", label: "Corde lestée", weight: weighted, style: "warn" }
+    ];
+  }
+  if (eq === "punching_bag") {
+    return [
+      { id: "normal", label: "Normal", weight: clampInt(el.bagNormalPct?.value ?? 40, 0, 100), style: "neutral" },
+      { id: "vitesse", label: "Vitesse", weight: clampInt(el.bagSpeedPct?.value ?? 20, 0, 100), style: "info" },
+      { id: "force", label: "Force", weight: clampInt(el.bagPowerPct?.value ?? 20, 0, 100), style: "danger" },
+      { id: "technique", label: "Technique", weight: clampInt(el.bagTechPct?.value ?? 20, 0, 100), style: "success" }
+    ];
+  }
+  return [];
+}
+
+function pickModifierForSettings(s) {
+  const eq = s.sessionEquipment ?? "none";
+  if (eq === "none") return null;
+
+  const mods = Array.isArray(s.modifiers) ? s.modifiers : defaultModifiersForEquipment(eq);
+  return pickWeighted(mods);
+}
+
 
 /***********************
  * UI HELPERS
@@ -319,6 +397,22 @@ function setButtons({ running, paused }) {
  * -> Un seul endroit qui "reflète" l'état runtime.
  */
 function updateUI() {
+  if (el.modifierPill) {
+  if (phase === "work" && currentModifier) {
+    el.modifierPill.classList.remove("hidden");
+    el.modifierPill.textContent = currentModifier.label;
+    el.modifierPill.dataset.style = currentModifier.style || "neutral";
+  } else if (phase === "rest" && nextModifier) {
+    el.modifierPill.classList.remove("hidden");
+    el.modifierPill.textContent = `Next: ${nextModifier.label}`;
+    el.modifierPill.dataset.style = nextModifier.style || "neutral";
+  } else {
+    el.modifierPill.classList.add("hidden");
+    el.modifierPill.textContent = "—";
+    el.modifierPill.dataset.style = "neutral";
+  }
+}
+
   setPhaseClass(phase);
 
   el.phaseLabel.textContent = phaseLabelFr(phase);
@@ -328,7 +422,8 @@ function updateUI() {
   if (phase === "work") {
   el.exerciseLabel.textContent = currentExercise;
 } else if (phase === "rest") {
-  el.exerciseLabel.textContent = `Next – ${nextExercise}`;
+  const modTxt = nextModifier ? `${nextModifier.label} · ` : "";
+  el.exerciseLabel.textContent = `Next – ${modTxt}${nextExercise}`;
 } else {
   el.exerciseLabel.textContent = "—";
 }
@@ -484,6 +579,7 @@ function getFilteredExercises() {
 // 3) Rendu de la checklist (utilise les helpers ci-dessus)
 function applyEquipmentUI() {
   const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
+  
 
   // Si minuteur simple: on cache toute la section exercices
   if (el.exerciseSection) {
@@ -497,6 +593,9 @@ function applyEquipmentUI() {
   if (eq === "none" && el.filterEquipment) {
     el.filterEquipment.value = "all"; // optionnel
   }
+  // Modificateurs visibles selon équipement
+  el.modsRope?.classList.toggle("hidden", eq !== "corde");
+  el.modsBag?.classList.toggle("hidden", eq !== "punching_bag");
 
   // Re-render la liste si elle est visible
   renderExerciseChecklist();
@@ -694,6 +793,8 @@ function loadSettings() {
       beepLast: clampInt(obj.beepLast ?? DEFAULTS.beepLast, 0, 10),
       exercises: normalizeExercises(obj.exercises),
       sessionEquipment: String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment),
+      modifiers: Array.isArray(obj.modifiers) ? obj.modifiers : defaultModifiersForEquipment(String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment)),
+
 
     };
   } catch {
@@ -706,6 +807,8 @@ function saveSettings(s) {
 }
 
 function settingsFromUI() {
+  const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
+
   return {
     prepSec: clampInt(el.prepSec.value, 0, 3600),
     workSec: clampInt(el.workSec.value, 1, 3600),
@@ -714,24 +817,25 @@ function settingsFromUI() {
     rounds: clampInt(el.rounds.value, 1, 200),
     beepLast: clampInt(el.beepLast.value, 0, 10),
 
-    sessionEquipment: el.sessionEquipment
-      ? el.sessionEquipment.value
-      : "none",
+    // Nouveau: type de séance (none / corde / punching_bag)
+    sessionEquipment: eq,
 
+    // Nouveau: modificateurs du modèle (dépend de l'équipement)
+    modifiers: getModifiersFromUI(eq),
+
+    // Exercices complets (important: garder equipment/level)
     exercises: exercisesState.map(e => ({
       id: e.id,
       name: e.name,
-      enabled: e.enabled,
+      enabled: !!e.enabled,
       equipment: e.equipment,
       level: e.level
     }))
   };
 }
 
-
-
 function settingsToUI(s) {
-  // Durées + paramètres
+  // 1) Durées + paramètres
   el.prepSec.value = (s.prepSec ?? DEFAULTS.prepSec);
   el.workSec.value = (s.workSec ?? DEFAULTS.workSec);
   el.restSec.value = (s.restSec ?? DEFAULTS.restSec);
@@ -739,17 +843,43 @@ function settingsToUI(s) {
   el.rounds.value = (s.rounds ?? DEFAULTS.rounds);
   el.beepLast.value = (s.beepLast ?? DEFAULTS.beepLast);
 
-  // Exercices (fallback si vide)
-    exercisesState = normalizeExercises(s.exercises);
+  // 2) Type de séance (équipement)
+  const eq = String(s.sessionEquipment ?? DEFAULTS.sessionEquipment ?? "none");
+  if (el.sessionEquipment) el.sessionEquipment.value = eq;
+
+  // 3) Exercices (fallback si vide)
+  exercisesState = normalizeExercises(s.exercises);
   if (!exercisesState.length) {
     exercisesState = DEFAULT_EXERCISES.map(x => ({ ...x }));
   }
-  if (el.sessionEquipment) el.sessionEquipment.value = s.sessionEquipment ?? DEFAULTS.sessionEquipment;
-  applyEquipmentUI(); 
 
+  // 4) Modificateurs: remplir les inputs selon l'équipement du modèle
+  //    (si absent, fallback sur défauts)
+  const mods = Array.isArray(s.modifiers) ? s.modifiers : defaultModifiersForEquipment(eq);
 
-  renderExerciseChecklist();
+  // Afficher/masquer les panels de modificateurs (si tu les as)
+  el.modsRope?.classList.toggle("hidden", eq !== "corde");
+  el.modsBag?.classList.toggle("hidden", eq !== "punching_bag");
+
+  if (eq === "corde") {
+    // % lestée = weight du mod "leste"
+    const w = mods.find(m => m.id === "leste")?.weight ?? 25;
+    if (el.ropeWeightedPct) el.ropeWeightedPct.value = clampInt(w, 0, 100);
+  } else if (eq === "punching_bag") {
+    const getW = (id, def) => clampInt(mods.find(m => m.id === id)?.weight ?? def, 0, 100);
+    if (el.bagNormalPct) el.bagNormalPct.value = getW("normal", 40);
+    if (el.bagSpeedPct)  el.bagSpeedPct.value  = getW("vitesse", 20);
+    if (el.bagPowerPct)  el.bagPowerPct.value  = getW("force", 20);
+    if (el.bagTechPct)   el.bagTechPct.value   = getW("technique", 20);
+  }
+
+  // 5) Appliquer l'UI dépendante de l'équipement:
+  //    - cache/affiche la section exercices
+  //    - force le filtre équipement
+  //    - rerender checklist
+  applyEquipmentUI();
 }
+
 
 
 /***********************
@@ -887,6 +1017,12 @@ function tick() {
  */
 function transitionNext() {
   const s = loadSettings(); // settings verrouillés au start
+  const pickNextPair = () => {
+    const ex = pickExerciseWithReplacement();
+    const name = ex ? ex.name : "—";
+    const mod = pickModifierForSettings(s);
+    return { name, mod };
+};
 
   // Helper local : choisir un exercice (ou "—" si séance minuteur)
   const pickName = () => {
@@ -921,6 +1057,9 @@ function transitionNext() {
     if (s.restSec > 0) {
       // Préparer le prochain exercice pendant le repos (pour afficher "Next – ...")
       nextExercise = hasExercises ? pickName() : "—";
+      const nx = pickNextPair();
+      nextExercise = nx.name;
+      nextModifier = nx.mod;
 
       phase = "rest";
       remaining = s.restSec;
@@ -953,36 +1092,47 @@ function transitionNext() {
   }
 
   // === REST -> WORK / COOLDOWN / DONE ===
-  if (phase === "rest") {
-    // Après repos: work suivant ou fin
-    if (roundIndex < roundsTotal) {
-      phase = "work";
-      roundIndex += 1;
+if (phase === "rest") {
+  // Après repos: work suivant ou fin
+  if (roundIndex < roundsTotal) {
+    phase = "work";
+    roundIndex += 1;
 
-      // Si on a préparé un "nextExercise", on le consomme
-      if (hasExercises && nextExercise && nextExercise !== "—") {
-        currentExercise = nextExercise;
-      } else {
-        currentExercise = hasExercises ? pickName() : "—";
-      }
-
-      nextExercise = "—";
-      remaining = s.workSec;
-      return;
+    // Consommer ce qu'on avait préparé pendant le repos
+    if (nextExercise && nextExercise !== "—") {
+      currentExercise = nextExercise;
+      currentModifier = nextModifier; // peut être null si eq=none
+    } else {
+      // fallback si jamais next n'était pas prêt
+      const ex = pickExerciseWithReplacement();
+      currentExercise = ex ? ex.name : "—";
+      currentModifier = pickModifierForSettings(s); // nécessite s = loadSettings() au début de transitionNext()
     }
 
-    if (s.cooldownSec > 0) {
-      phase = "cooldown";
-      remaining = s.cooldownSec;
-      currentExercise = "—";
-      nextExercise = "—";
-      return;
-    }
+    nextExercise = "—";
+    nextModifier = null;
 
-    phase = "done";
-    finish();
+    remaining = s.workSec;
     return;
   }
+
+  // Fin des rounds -> cooldown ou done
+  if (s.cooldownSec > 0) {
+    phase = "cooldown";
+    remaining = s.cooldownSec;
+
+    currentExercise = "—";
+    currentModifier = null;
+    nextExercise = "—";
+    nextModifier = null;
+    return;
+  }
+
+  phase = "done";
+  finish();
+  return;
+}
+
 
   // === COOLDOWN -> DONE ===
   if (phase === "cooldown") {
@@ -1099,6 +1249,15 @@ el.usePresetBtn.addEventListener("click", () => {
   ex.enabled = t.checked;
   saveSettings(settingsFromUI()); // optionnel: autosave
 });
+
+  const saveModsIfAny = () => saveSettings(settingsFromUI());
+
+  el.ropeWeightedPct?.addEventListener("change", saveModsIfAny);
+  el.bagNormalPct?.addEventListener("change", saveModsIfAny);
+  el.bagSpeedPct?.addEventListener("change", saveModsIfAny);
+  el.bagPowerPct?.addEventListener("change", saveModsIfAny);
+  el.bagTechPct?.addEventListener("change", saveModsIfAny);
+
 
   // Ajouter un exercices
   el.addExerciseBtn.addEventListener("click", () => {
