@@ -421,7 +421,7 @@ function updateUI() {
     el.modifierPill.classList.remove("hidden");
     el.modifierPill.textContent = currentModifier.label;
     el.modifierPill.dataset.style = currentModifier.style || "neutral";
-  } else if (phase === "rest" && nextModifier) {
+  } else if ((phase === "rest" || phase === "prep") && nextModifier) {
     el.modifierPill.classList.remove("hidden");
     el.modifierPill.textContent = `Next: ${nextModifier.label}`;
     el.modifierPill.dataset.style = nextModifier.style || "neutral";
@@ -438,13 +438,14 @@ function updateUI() {
   el.timeLabel.textContent = fmtTime(remaining);
 
   // Exercice seulement en phase work
-  if (phase === "work") {
+if (phase === "work") {
   el.exerciseLabel.textContent = currentExercise;
-} else if (phase === "rest") {
+} else if (phase === "rest" || phase === "prep") {
   el.exerciseLabel.textContent = `Next – ${nextExercise}`;
 } else {
   el.exerciseLabel.textContent = "—";
 }
+
 
 
   // Affichage intervalles
@@ -508,6 +509,8 @@ function openNewPreset() {
     beepLast: DEFAULTS.beepLast,
     exercises: DEFAULT_EXERCISES.map(x => ({ ...x }))
   });
+  applyEquipmentUI({ resetChecks: true });
+  saveSettings(settingsFromUI());
 
   showSettings();
 }
@@ -595,8 +598,14 @@ function getFilteredExercises() {
 }
 
 // 3) Rendu de la checklist (utilise les helpers ci-dessus)
-function applyEquipmentUI() {
+function applyEquipmentUI({ resetChecks = false } = {}) {
   const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
+
+  if (resetChecks) {
+    setAllExercisesEnabled(false);
+    if (eq !== "none") enableOnlyEquipment(eq);
+  }
+
   
 
   // Si minuteur simple: on cache toute la section exercices
@@ -617,6 +626,18 @@ function applyEquipmentUI() {
 
   // Re-render la liste si elle est visible
   renderExerciseChecklist();
+}
+
+function setAllExercisesEnabled(enabled) {
+  exercisesState = exercisesState.map(ex => ({ ...ex, enabled: !!enabled }));
+}
+
+function enableOnlyEquipment(eq) {
+  // eq: "corde" | "punching_bag" | "none"
+  exercisesState = exercisesState.map(ex => {
+    const shouldEnable = (eq !== "none") && (ex.equipment === eq);
+    return { ...ex, enabled: shouldEnable };
+  });
 }
 
 
@@ -895,7 +916,7 @@ function settingsToUI(s) {
   //    - cache/affiche la section exercices
   //    - force le filtre équipement
   //    - rerender checklist
-  applyEquipmentUI();
+applyEquipmentUI({ resetChecks: false });
 }
 
 
@@ -925,12 +946,23 @@ function startSession() {
   // Déclenché suite au clic -> OK pour mobile
   initAudio();
   requestWakeLock();
+  // Préparer le 1er exercice (utile pour l'afficher dès la Préparation)
+  if (s.sessionEquipment !== "none") {
+    const nx = pickExerciseWithReplacement();
+    nextExercise = nx ? nx.name : "—";
+    nextModifier = pickModifierForSettings(s);
+  } else {
+    nextExercise = "—";
+    nextModifier = null;
+  }
+
 
   // Définir première phase
   if (s.prepSec > 0) {
     phase = "prep";
     remaining = s.prepSec;
     currentExercise = "—";
+    currentModifier = null;
   } else {
     phase = "work";
     roundIndex = 1;
@@ -1057,57 +1089,69 @@ function transitionNext() {
     phase = "work";
     roundIndex = 1;
 
-    // Si un prochain exercice a été préparé pendant le repos, on l’utilise
-    if (hasExercises && nextExercise && nextExercise !== "—") {
-      currentExercise = nextExercise;
-    } else {
-      currentExercise = hasExercises ? pickName() : "—";
-    }
+    // Consommer ce qui a été préparé pendant la prép
+  if (nextExercise && nextExercise !== "—") {
+    currentExercise = nextExercise;
+    currentModifier = nextModifier;
+  } else {
+    const ex = pickExerciseWithReplacement();
+    currentExercise = ex ? ex.name : "—";
+    currentModifier = pickModifierForSettings(s);
+  }
+
+  nextExercise = "—";
+  nextModifier = null;
+
+  remaining = s.workSec;
+  return;
+}
+
+  // === WORK -> REST / WORK / COOLDOWN / DONE ===
+// Après un work : repos seulement si ce n'est PAS le dernier round
+  if (!isLastRound && s.restSec > 0) {
+    // Préparer le prochain "work" pendant le repos
+    const nx = pickExerciseWithReplacement();
+    nextExercise = nx ? nx.name : "—";
+    nextModifier = pickModifierForSettings(s);
+
+    phase = "rest";
+    remaining = s.restSec;
+    return;
+  }
+
+  // Si c'est le dernier round (ou pas de repos), on enchaîne directement
+  if (!isLastRound) {
+    // round suivant
+    phase = "work";
+    roundIndex += 1;
+
+    const ex = pickExerciseWithReplacement();
+    currentExercise = ex ? ex.name : "—";
+    currentModifier = pickModifierForSettings(s);
 
     nextExercise = "—";
+    nextModifier = null;
+
     remaining = s.workSec;
     return;
   }
 
-  // === WORK -> REST / WORK / COOLDOWN / DONE ===
-  if (phase === "work") {
-    // Après un work: repos si défini
-    if (s.restSec > 0) {
-      // Préparer le prochain exercice pendant le repos (pour afficher "Next – ...")
-      nextExercise = hasExercises ? pickName() : "—";
-      const nx = pickNextPair();
-      nextExercise = nx.name;
-      nextModifier = nx.mod;
+  // Fin des rounds -> cooldown ou done (directement, sans dernier repos)
+  if (s.cooldownSec > 0) {
+    phase = "cooldown";
+    remaining = s.cooldownSec;
 
-      phase = "rest";
-      remaining = s.restSec;
-      return;
-    }
-
-    // Pas de repos -> enchaîner ou finir
-    if (roundIndex < roundsTotal) {
-      phase = "work";
-      roundIndex += 1;
-
-      currentExercise = hasExercises ? pickName() : "—";
-      nextExercise = "—";
-      remaining = s.workSec;
-      return;
-    }
-
-    // Fin des rounds -> cooldown ou done
-    if (s.cooldownSec > 0) {
-      phase = "cooldown";
-      remaining = s.cooldownSec;
-      currentExercise = "—";
-      nextExercise = "—";
-      return;
-    }
-
-    phase = "done";
-    finish();
+    currentExercise = "—";
+    currentModifier = null;
+    nextExercise = "—";
+    nextModifier = null;
     return;
   }
+
+  phase = "done";
+  finish();
+  return;
+}
 
   // === REST -> WORK / COOLDOWN / DONE ===
 if (phase === "rest") {
@@ -1246,7 +1290,11 @@ el.usePresetBtn.addEventListener("click", () => {
   saveCurrentPresetFromUI();     // s'assure que le modèle est bien sauvegardé
   usePreset(editingPresetId);    // puis bascule sur le chrono
 });
-  el.sessionEquipment?.addEventListener("change", applyEquipmentUI);
+el.sessionEquipment?.addEventListener("change", () => {
+  applyEquipmentUI({ resetChecks: true });
+  saveSettings(settingsFromUI());
+});
+
 
 
 
