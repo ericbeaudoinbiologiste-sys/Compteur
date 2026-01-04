@@ -37,12 +37,6 @@
         </label>
       </div>
 
-      <div class="row">
-        <button id="savePresetBtn" class="btn primary">Enregistrer le modèle</button>
-        <button id="usePresetBtn" class="btn secondary">Utiliser ce modèle</button>
-        <button id="backToPresetsBtn" class="btn ghost">Retour</button>
-      </div>
-
       <div class="grid">
         <label>Préparation (s)
           <input id="prepSec" type="number" min="0" max="3600" step="1" />
@@ -63,7 +57,26 @@
           <input id="beepLast" type="number" min="0" max="10" step="1" />
         </label>
       </div>
+      
+      <div class="row">
+        <button id="savePresetBtn" class="btn primary">Enregistrer le modèle</button>
+        <button id="usePresetBtn" class="btn secondary">Utiliser ce modèle</button>
+        <button id="backToPresetsBtn" class="btn ghost">Retour</button>
+      </div>
 
+      <h3 class="h3">Équipement</h3>
+      <div class="grid">
+        <label>Type de séance
+          <select id="sessionEquipment">
+            <option value="none">Aucun (minuteur seulement)</option>
+            <option value="corde">Corde à sauter</option>
+            <option value="punching_bag">Punching bag</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Conteneur de toute la partie exercices -->
+      <div id="exerciseSection">
       <h3 class="h3">Filtrer les exercices</h3>
       <div class="grid">
         <label>Équipement
@@ -114,16 +127,17 @@
       <div class="row">
         <button id="addExerciseBtn" class="btn secondary">Ajouter</button>
       </div>
+      </div></div> 
 
       <!-- (Optionnel) Ces boutons existent dans ton app.js, mais ne sont plus nécessaires avec les presets.
            Si tu veux les garder, assure-toi que les IDs existent dans app.js.
            Sinon, enlève aussi les refs + listeners dans app.js.
       -->
-      <div class="row" style="display:none">
+      <!-- <div class="row" style="display:none">
         <button id="saveBtn" class="btn primary">Sauver</button>
         <button id="resetBtn" class="btn ghost">Réinitialiser</button>
         <button id="goTimerBtn" class="btn secondary">Aller au chrono</button>
-      </div>
+      </div> -->
     </section>
 
     <!-- VUE 3 : CHRONO -->
