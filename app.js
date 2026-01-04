@@ -59,6 +59,8 @@ const DEFAULTS = {
   rounds: 8,
   beepLast: 3,
   exercises: DEFAULT_EXERCISES
+  sessionEquipment: "none", 
+
 };
 
 // Clé de stockage local
@@ -156,6 +158,9 @@ const el = {
 
   // Checklist exercices
   exerciseList: document.getElementById("exerciseList"),
+  sessionEquipment: document.getElementById("sessionEquipment"),
+  exerciseSection: document.getElementById("exerciseSection"),
+
 
   // Boutons réglages
   // saveBtn: document.getElementById("saveBtn"),
@@ -475,6 +480,26 @@ function getFilteredExercises() {
 }
 
 // 3) Rendu de la checklist (utilise les helpers ci-dessus)
+function applyEquipmentUI() {
+  const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
+
+  // Si minuteur simple: on cache toute la section exercices
+  if (el.exerciseSection) {
+    el.exerciseSection.classList.toggle("hidden", eq === "none");
+  }
+
+  // Si un équipement est choisi: on force le filtre équipement
+  if (eq !== "none" && el.filterEquipment) {
+    el.filterEquipment.value = eq;
+  }
+  if (eq === "none" && el.filterEquipment) {
+    el.filterEquipment.value = "all"; // optionnel
+  }
+
+  // Re-render la liste si elle est visible
+  renderExerciseChecklist();
+}
+
 
 function renderExerciseChecklist() {
   if (!el.exerciseList) return;
@@ -546,10 +571,13 @@ function renderExerciseChecklist() {
  * (sinon, on tombe sur une liste vide -> crash du random).
  */
 function enabledExercises() {
+  const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
+  if (eq === "none") return []; // minuteur simple -> pas d'exercices
+
   const enabled = exercisesState.filter(e => e.enabled);
-  // si rien n'est coché, fallback = tout (sinon random sur vide)
   return enabled.length ? enabled : exercisesState;
 }
+
 
 /**
  * Tirage aléatoire AVEC remise.
@@ -557,9 +585,11 @@ function enabledExercises() {
  */
 function pickExerciseWithReplacement() {
   const list = enabledExercises();
+  if (!list.length) return null;
   const idx = Math.floor(Math.random() * list.length);
-  return list[idx].name;
+  return list[idx];
 }
+
 
 /***********************
  * AUDIO (Web Audio)
@@ -661,6 +691,8 @@ function loadSettings() {
       rounds: clampInt(obj.rounds ?? DEFAULTS.rounds, 1, 200),
       beepLast: clampInt(obj.beepLast ?? DEFAULTS.beepLast, 0, 10),
       exercises: normalizeExercises(obj.exercises)
+      sessionEquipment: String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment),
+
     };
   } catch {
     return { ...DEFAULTS, exercises: DEFAULT_EXERCISES };
@@ -679,6 +711,11 @@ function settingsFromUI() {
     cooldownSec: clampInt(el.cooldownSec.value, 0, 3600),
     rounds: clampInt(el.rounds.value, 1, 200),
     beepLast: clampInt(el.beepLast.value, 0, 10),
+
+    sessionEquipment: el.sessionEquipment
+      ? el.sessionEquipment.value
+      : "none",
+
     exercises: exercisesState.map(e => ({
       id: e.id,
       name: e.name,
@@ -688,6 +725,7 @@ function settingsFromUI() {
     }))
   };
 }
+
 
 
 function settingsToUI(s) {
@@ -700,10 +738,13 @@ function settingsToUI(s) {
   el.beepLast.value = (s.beepLast ?? DEFAULTS.beepLast);
 
   // Exercices (fallback si vide)
-  exercisesState = normalizeExercises(s.exercises);
+    exercisesState = normalizeExercises(s.exercises);
   if (!exercisesState.length) {
     exercisesState = DEFAULT_EXERCISES.map(x => ({ ...x }));
   }
+  if (el.sessionEquipment) el.sessionEquipment.value = s.sessionEquipment ?? DEFAULTS.sessionEquipment;
+  applyEquipmentUI(); 
+
 
   renderExerciseChecklist();
 }
@@ -743,7 +784,8 @@ function startSession() {
   } else {
     phase = "work";
     roundIndex = 1;
-    currentExercise = pickExerciseWithReplacement();
+    const ex = pickExerciseWithReplacement();
+    currentExercise = ex ? ex.name : "—";
     remaining = s.workSec;
   }
 
@@ -853,7 +895,9 @@ function transitionNext() {
     if (nextExercise && nextExercise !== "—") {
     currentExercise = nextExercise;
     } else {
-    currentExercise = pickExerciseWithReplacement();
+    const ex = pickExerciseWithReplacement();
+    currentExercise = ex ? ex.name : "—";
+
     }
     nextExercise = "—"; // on le vide, il sera recalculé au prochain repos
 
@@ -878,7 +922,9 @@ function transitionNext() {
     roundIndex += 1;
 
     // Pas de phase repos pour préparer "next", donc on choisit maintenant
-    currentExercise = pickExerciseWithReplacement();
+    const ex = pickExerciseWithReplacement();
+    currentExercise = ex ? ex.name : "—";
+
     nextExercise = "—";
 
     remaining = s.workSec;
@@ -903,7 +949,9 @@ function transitionNext() {
     if (roundIndex < roundsTotal) {
       phase = "work";
       roundIndex += 1;
-      currentExercise = pickExerciseWithReplacement();
+      const ex = pickExerciseWithReplacement();
+      currentExercise = ex ? ex.name : "—";
+
       remaining = s.workSec;
       return;
     }
@@ -1011,6 +1059,8 @@ el.usePresetBtn.addEventListener("click", () => {
   saveCurrentPresetFromUI();     // s'assure que le modèle est bien sauvegardé
   usePreset(editingPresetId);    // puis bascule sur le chrono
 });
+  el.sessionEquipment?.addEventListener("change", applyEquipmentUI);
+
 
 
   /*********
