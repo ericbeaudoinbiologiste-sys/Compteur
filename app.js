@@ -26,6 +26,8 @@ function uid() {
 }
 
 const DEFAULT_EXERCISES = [
+
+  // Exercices pour la corde à sauter
   { id: uid(), name: "Base", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Side straddle", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "ciseaux", enabled: true, equipment: "corde", level: "simple" },
@@ -48,7 +50,24 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Ski", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Side-step", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Cloche", enabled: true, equipment: "corde", level: "simple" },
-  
+  { id: uid(), name: "Heel tap", enabled: true, equipment: "corde", level: "simple" },
+  // Exercices pour le punching bag
+  { id: uid(), name: "1-2", enabled: true, equipment: "punching_bag", level: "simple" },
+  { id: uid(), name: "1-1-2", enabled: true, equipment: "punching_bag", level: "simple" },
+  { id: uid(), name: "2-3-2", enabled: true, equipment: "punching_bag", level: "simple" },
+  { id: uid(), name: "3-4", enabled: true, equipment: "punching_bag", level: "simple" },
+  { id: uid(), name: "1-2-3-4", enabled: true, equipment: "punching_bag", level: "simple" },
+  { id: uid(), name: "1-3-2-3", enabled: true, equipment: "punching_bag", level: "simple" },
+  { id: uid(), name: "2-3-6-3", enabled: true, equipment: "punching_bag", level: "simple" },
+  { id: uid(), name: "1-2-Round House", enabled: true, equipment: "punching_bag", level: "simple" }, 
+  { id: uid(), name: "1-2-Switch-Kick", enabled: true, equipment: "punching_bag", level: "simple" },
+  { id: uid(), name: "Low Kick", enabled: true, equipment: "punching_bag", level: "simple" },  
+  { id: uid(), name: "Body Kick", enabled: true, equipment: "punching_bag", level: "simple" }, 
+  { id: uid(), name: "Head Kick", enabled: true, equipment: "punching_bag", level: "simple" }, 
+  { id: uid(), name: "Roundhouse", enabled: true, equipment: "punching_bag", level: "simple" }, 
+  { id: uid(), name: "Switch Kick", enabled: true, equipment: "punching_bag", level: "simple" }, 
+  { id: uid(), name: "Lead Tead", enabled: true, equipment: "punching_bag", level: "simple" }, 
+  { id: uid(), name: "Rear Tead", enabled: true, equipment: "punching_bag", level: "simple" }, 
 ];
 
 
