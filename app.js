@@ -886,74 +886,87 @@ function tick() {
  * cooldown -> done
  */
 function transitionNext() {
-  const s = loadSettings(); // on reprend les settings sauvegardés (verrouillés au start)
-  // NB: on pourrait aussi conserver "s" dans une variable globale au start
-  // mais loadSettings est simple et assez léger ici.
+  const s = loadSettings(); // settings verrouillés au start
 
+  // Helper local : choisir un exercice (ou "—" si séance minuteur)
+  const pickName = () => {
+    const ex = pickExerciseWithReplacement(); // retourne objet ou null
+    return ex ? ex.name : "—";
+  };
+
+  // Helper local : est-ce qu'on utilise des exercices?
+  // (si sessionEquipment === "none", enabledExercises() renvoie [], donc pickName -> "—")
+  const hasExercises = (s.sessionEquipment ?? "none") !== "none";
+
+  // === PREP -> WORK ===
   if (phase === "prep") {
     phase = "work";
     roundIndex = 1;
-    // Si un prochain exercice a déjà été choisi (pendant le repos), on l'utilise.
-    if (nextExercise && nextExercise !== "—") {
-    currentExercise = nextExercise;
+
+    // Si un prochain exercice a été préparé pendant le repos, on l’utilise
+    if (hasExercises && nextExercise && nextExercise !== "—") {
+      currentExercise = nextExercise;
     } else {
-    const ex = pickExerciseWithReplacement();
-    currentExercise = ex ? ex.name : "—";
-
+      currentExercise = hasExercises ? pickName() : "—";
     }
-    nextExercise = "—"; // on le vide, il sera recalculé au prochain repos
-
-    remaining = s.workSec;
-    return;
-  }
-
- if (phase === "work") {
-  // Après un work : repos si défini
-  if (s.restSec > 0) {
-    // On prépare l'exercice du prochain "work" pendant le repos (tirage avec remise)
-    nextExercise = pickExerciseWithReplacement();
-
-    phase = "rest";
-    remaining = s.restSec;
-    return;
-  }
-
-  // Pas de repos -> enchaîner ou finir
-  if (roundIndex < roundsTotal) {
-    phase = "work";
-    roundIndex += 1;
-
-    // Pas de phase repos pour préparer "next", donc on choisit maintenant
-    const ex = pickExerciseWithReplacement();
-    currentExercise = ex ? ex.name : "—";
 
     nextExercise = "—";
-
     remaining = s.workSec;
     return;
   }
 
-  // Fin des rounds -> cooldown ou done
-  if (s.cooldownSec > 0) {
-    phase = "cooldown";
-    remaining = s.cooldownSec;
+  // === WORK -> REST / WORK / COOLDOWN / DONE ===
+  if (phase === "work") {
+    // Après un work: repos si défini
+    if (s.restSec > 0) {
+      // Préparer le prochain exercice pendant le repos (pour afficher "Next – ...")
+      nextExercise = hasExercises ? pickName() : "—";
+
+      phase = "rest";
+      remaining = s.restSec;
+      return;
+    }
+
+    // Pas de repos -> enchaîner ou finir
+    if (roundIndex < roundsTotal) {
+      phase = "work";
+      roundIndex += 1;
+
+      currentExercise = hasExercises ? pickName() : "—";
+      nextExercise = "—";
+      remaining = s.workSec;
+      return;
+    }
+
+    // Fin des rounds -> cooldown ou done
+    if (s.cooldownSec > 0) {
+      phase = "cooldown";
+      remaining = s.cooldownSec;
+      currentExercise = "—";
+      nextExercise = "—";
+      return;
+    }
+
+    phase = "done";
+    finish();
     return;
   }
 
-  phase = "done";
-  finish();
-  return;
-}
-
-
+  // === REST -> WORK / COOLDOWN / DONE ===
   if (phase === "rest") {
     // Après repos: work suivant ou fin
     if (roundIndex < roundsTotal) {
       phase = "work";
       roundIndex += 1;
-      const ex = pickExerciseWithReplacement();
-      currentExercise = ex ? ex.name : "—";
 
+      // Si on a préparé un "nextExercise", on le consomme
+      if (hasExercises && nextExercise && nextExercise !== "—") {
+        currentExercise = nextExercise;
+      } else {
+        currentExercise = hasExercises ? pickName() : "—";
+      }
+
+      nextExercise = "—";
       remaining = s.workSec;
       return;
     }
@@ -961,6 +974,8 @@ function transitionNext() {
     if (s.cooldownSec > 0) {
       phase = "cooldown";
       remaining = s.cooldownSec;
+      currentExercise = "—";
+      nextExercise = "—";
       return;
     }
 
@@ -969,12 +984,14 @@ function transitionNext() {
     return;
   }
 
+  // === COOLDOWN -> DONE ===
   if (phase === "cooldown") {
     phase = "done";
     finish();
     return;
   }
 }
+
 
 /**
  * Fin de session:
@@ -1068,31 +1085,6 @@ el.usePresetBtn.addEventListener("click", () => {
   /*********
    * Events Réglages
    *********/
-
-  // Sauver
-  // if (el.saveBtn) {
-  // el.saveBtn.addEventListener("click", () => {
-  //   const s2 = settingsFromUI();
-  //   saveSettings(s2);
-  // });
-}
-
-  // Réinitialiser
-//   if (el.resetBtn) {
-//   el.resetBtn.addEventListener("click", () => {
-//     saveSettings({ ...DEFAULTS, exercises: DEFAULT_EXERCISES });
-//     settingsToUI({ ...DEFAULTS, exercises: DEFAULT_EXERCISES });
-//   });
-// }
-
-  // Aller au chrono (page 2)
-  // if (el.goTimerBtn) {
-//   el.goTimerBtn.addEventListener("click", () => {
-//     const s2 = settingsFromUI();
-//     saveSettings(s2);
-//     showTimer();
-//   });
-// }
 
   // Checklist: écouter les changements (event delegation)
   el.exerciseList.addEventListener("change", (ev) => {
