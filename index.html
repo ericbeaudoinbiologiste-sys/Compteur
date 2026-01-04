@@ -58,11 +58,7 @@
         </label>
       </div>
       
-      <div class="row">
-        <button id="savePresetBtn" class="btn primary">Enregistrer le modèle</button>
-        <button id="usePresetBtn" class="btn secondary">Utiliser ce modèle</button>
-        <button id="backToPresetsBtn" class="btn ghost">Retour</button>
-      </div>
+
 
       <h3 class="h3">Équipement</h3>
       <div class="grid">
@@ -74,6 +70,38 @@
           </select>
         </label>
       </div>
+      <h3 class="h3">Modificateurs</h3>
+
+<!-- Corde -->
+<div id="modsRope" class="cardSub hidden">
+  <h4 class="h4">Corde à sauter</h4>
+  <div class="grid">
+    <label>% Corde lestée
+      <input id="ropeWeightedPct" type="number" min="0" max="100" step="5" value="0" />
+    </label>
+  </div>
+  <p class="muted">Le reste du temps = corde normale.</p>
+</div>
+
+<!-- Punching bag -->
+<div id="modsBag" class="cardSub hidden">
+  <h4 class="h4">Punching bag</h4>
+  <div class="grid">
+    <label>% Normal
+      <input id="bagNormalPct" type="number" min="0" max="100" step="5" value="100" />
+    </label>
+    <label>% Vitesse
+      <input id="bagSpeedPct" type="number" min="0" max="100" step="5" value="0" />
+    </label>
+    <label>% Force
+      <input id="bagPowerPct" type="number" min="0" max="100" step="5" value="0" />
+    </label>
+    <label>% Technique
+      <input id="bagTechPct" type="number" min="0" max="100" step="5" value="0" />
+    </label>
+  </div>
+  <p class="muted">Si le total n’est pas 100, l’app normalise automatiquement.</p>
+</div>
 
       <!-- Conteneur de toute la partie exercices -->
       <div id="exerciseSection">
@@ -128,6 +156,11 @@
         <button id="addExerciseBtn" class="btn secondary">Ajouter</button>
       </div>
       </div></div> 
+      <div class="row">
+      <button id="savePresetBtn" class="btn primary">Enregistrer le modèle</button>
+      <button id="usePresetBtn" class="btn secondary">Utiliser ce modèle</button>
+      <button id="backToPresetsBtn" class="btn ghost">Retour</button>
+      </div>
 
       <!-- (Optionnel) Ces boutons existent dans ton app.js, mais ne sont plus nécessaires avec les presets.
            Si tu veux les garder, assure-toi que les IDs existent dans app.js.
@@ -157,6 +190,7 @@
 
       <div class="exercise">
         <div class="label">Exercice</div>
+        <div id="modifierPill" class="pillBig hidden">—</div>
         <div id="exerciseLabel" class="exerciseName">—</div>
       </div>
 
