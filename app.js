@@ -1239,6 +1239,20 @@ function finish() {
 
   setButtons({ running: true, paused: true });
 }
+function registerSWAndAutoReload() {
+  if (!("serviceWorker" in navigator)) return;
+
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (reloaded) return;
+    reloaded = true;
+    window.location.reload();
+  });
+}
+
+registerSWAndAutoReload();
 
 /***********************
  * INIT / EVENTS
@@ -1386,12 +1400,13 @@ el.sessionEquipment?.addEventListener("change", () => {
   /*********
    * Service Worker
    *********/
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js").catch(() => {});
-    });
-  }
+  // if ("serviceWorker" in navigator) {
+  //   window.addEventListener("load", () => {
+  //     navigator.serviceWorker.register("./sw.js").catch(() => {});
+  //   });
+  // }
 }
+
 
 // Lancer l'app
 init();
