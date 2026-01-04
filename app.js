@@ -58,7 +58,7 @@ const DEFAULTS = {
   cooldownSec: 30,
   rounds: 8,
   beepLast: 3,
-  exercises: DEFAULT_EXERCISES
+  exercises: DEFAULT_EXERCISES,
   sessionEquipment: "none", 
 
 };
