@@ -692,7 +692,7 @@ function loadSettings() {
       cooldownSec: clampInt(obj.cooldownSec ?? DEFAULTS.cooldownSec, 0, 3600),
       rounds: clampInt(obj.rounds ?? DEFAULTS.rounds, 1, 200),
       beepLast: clampInt(obj.beepLast ?? DEFAULTS.beepLast, 0, 10),
-      exercises: normalizeExercises(obj.exercises)
+      exercises: normalizeExercises(obj.exercises),
       sessionEquipment: String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment),
 
     };
