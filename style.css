@@ -182,4 +182,20 @@ body.timer-only .card.big {
   margin: 0;
 }
 
+/* Badge du modificateur */
+.cardSub{ margin-top: 10px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,.04); }
+.pillBig{
+  display:inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  margin: 6px 0 10px;
+  border: 1px solid rgba(255,255,255,.14);
+}
+.pillBig[data-style="neutral"]{ background: rgba(148,163,184,.18); }
+.pillBig[data-style="info"]{ background: rgba(56,189,248,.22); }
+.pillBig[data-style="success"]{ background: rgba(34,197,94,.22); }
+.pillBig[data-style="warn"]{ background: rgba(250,204,21,.22); color:#0b1220; }
+.pillBig[data-style="danger"]{ background: rgba(239,68,68,.22); }
+
 
