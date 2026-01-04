@@ -185,17 +185,38 @@ body.timer-only .card.big {
 /* Badge du modificateur */
 .cardSub{ margin-top: 10px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,.04); }
 .pillBig{
-  display:inline-block;
-  padding: 8px 12px;
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+
+  padding: 10px 14px;
   border-radius: 999px;
   font-weight: 900;
-  margin: 6px 0 10px;
-  border: 1px solid rgba(255,255,255,.14);
+  font-size: 1rem;
+  letter-spacing: .2px;
+
+  /* contraste */
+  color: #0b1220;                 /* texte sombre lisible */
+  background: #e2e8f0;             /* fond clair opaque */
+  border: 2px solid rgba(255,255,255,.55);
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.35),
+    0 0 0 2px rgba(0,0,0,.25) inset;
 }
-.pillBig[data-style="neutral"]{ background: rgba(148,163,184,.18); }
-.pillBig[data-style="info"]{ background: rgba(56,189,248,.22); }
-.pillBig[data-style="success"]{ background: rgba(34,197,94,.22); }
-.pillBig[data-style="warn"]{ background: rgba(250,204,21,.22); color:#0b1220; }
-.pillBig[data-style="danger"]{ background: rgba(239,68,68,.22); }
+
+/* Couleurs par style (fond très opaque) */
+.pillBig[data-style="neutral"]{ background:#e2e8f0; color:#0b1220; }
+.pillBig[data-style="info"]{    background:#38bdf8; color:#06121f; }
+.pillBig[data-style="success"]{ background:#22c55e; color:#06121f; }
+.pillBig[data-style="warn"]{    background:#facc15; color:#1a1a1a; }
+.pillBig[data-style="danger"]{  background:#ef4444; color:#fff; }
+
+/* Optionnel: rendre le badge plus "punchy" sur fond coloré */
+.phase-work .pillBig,
+.phase-rest .pillBig,
+.phase-prep .pillBig,
+.phase-cooldown .pillBig{
+  border-color: rgba(255,255,255,.75);
+}
 
 
