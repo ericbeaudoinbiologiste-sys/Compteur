@@ -1078,108 +1078,27 @@ function tick() {
  */
 function transitionNext() {
   const s = loadSettings(); // settings verrouillés au start
-  const pickNextPair = () => {
-    const ex = pickExerciseWithReplacement();
-    const name = ex ? ex.name : "—";
-    const mod = pickModifierForSettings(s);
-    return { name, mod };
-};
 
-  // Helper local : choisir un exercice (ou "—" si séance minuteur)
-  const pickName = () => {
-    const ex = pickExerciseWithReplacement(); // retourne objet ou null
-    return ex ? ex.name : "—";
+  const pickPair = () => {
+    const ex = pickExerciseWithReplacement();      // objet ou null
+    return {
+      name: ex ? ex.name : "—",
+      mod: pickModifierForSettings(s)              // null si equipment=none
+    };
   };
-
-  // Helper local : est-ce qu'on utilise des exercices?
-  // (si sessionEquipment === "none", enabledExercises() renvoie [], donc pickName -> "—")
-  const hasExercises = (s.sessionEquipment ?? "none") !== "none";
 
   // === PREP -> WORK ===
   if (phase === "prep") {
     phase = "work";
     roundIndex = 1;
 
-    // Consommer ce qui a été préparé pendant la prép
-  if (nextExercise && nextExercise !== "—") {
-    currentExercise = nextExercise;
-    currentModifier = nextModifier;
-  } else {
-    const ex = pickExerciseWithReplacement();
-    currentExercise = ex ? ex.name : "—";
-    currentModifier = pickModifierForSettings(s);
-  }
-
-  nextExercise = "—";
-  nextModifier = null;
-
-  remaining = s.workSec;
-  return;
-}
-
-  // === WORK -> REST / WORK / COOLDOWN / DONE ===
-// Après un work : repos seulement si ce n'est PAS le dernier round
-  if (!isLastRound && s.restSec > 0) {
-    // Préparer le prochain "work" pendant le repos
-    const nx = pickExerciseWithReplacement();
-    nextExercise = nx ? nx.name : "—";
-    nextModifier = pickModifierForSettings(s);
-
-    phase = "rest";
-    remaining = s.restSec;
-    return;
-  }
-
-  // Si c'est le dernier round (ou pas de repos), on enchaîne directement
-  if (!isLastRound) {
-    // round suivant
-    phase = "work";
-    roundIndex += 1;
-
-    const ex = pickExerciseWithReplacement();
-    currentExercise = ex ? ex.name : "—";
-    currentModifier = pickModifierForSettings(s);
-
-    nextExercise = "—";
-    nextModifier = null;
-
-    remaining = s.workSec;
-    return;
-  }
-
-  // Fin des rounds -> cooldown ou done (directement, sans dernier repos)
-  if (s.cooldownSec > 0) {
-    phase = "cooldown";
-    remaining = s.cooldownSec;
-
-    currentExercise = "—";
-    currentModifier = null;
-    nextExercise = "—";
-    nextModifier = null;
-    return;
-  }
-
-  phase = "done";
-  finish();
-  return;
-}
-
-  // === REST -> WORK / COOLDOWN / DONE ===
-if (phase === "rest") {
-  // Après repos: work suivant ou fin
-  if (roundIndex < roundsTotal) {
-    phase = "work";
-    roundIndex += 1;
-
-    // Consommer ce qu'on avait préparé pendant le repos
     if (nextExercise && nextExercise !== "—") {
       currentExercise = nextExercise;
-      currentModifier = nextModifier; // peut être null si eq=none
+      currentModifier = nextModifier;
     } else {
-      // fallback si jamais next n'était pas prêt
-      const ex = pickExerciseWithReplacement();
-      currentExercise = ex ? ex.name : "—";
-      currentModifier = pickModifierForSettings(s); // nécessite s = loadSettings() au début de transitionNext()
+      const nx = pickPair();
+      currentExercise = nx.name;
+      currentModifier = nx.mod;
     }
 
     nextExercise = "—";
@@ -1189,23 +1108,75 @@ if (phase === "rest") {
     return;
   }
 
-  // Fin des rounds -> cooldown ou done
-  if (s.cooldownSec > 0) {
-    phase = "cooldown";
-    remaining = s.cooldownSec;
+  // === WORK -> REST / WORK / COOLDOWN / DONE ===
+  if (phase === "work") {
+    const isLastRound = roundIndex >= roundsTotal;
 
-    currentExercise = "—";
-    currentModifier = null;
-    nextExercise = "—";
-    nextModifier = null;
+    // Repos seulement si pas dernier round
+    if (!isLastRound && s.restSec > 0) {
+      const nx = pickPair();
+      nextExercise = nx.name;
+      nextModifier = nx.mod;
+
+      phase = "rest";
+      remaining = s.restSec;
+      return;
+    }
+
+    // Pas de repos (ou dernier round) -> work suivant si pas fini
+    if (!isLastRound) {
+      phase = "work";
+      roundIndex += 1;
+
+      const nx = pickPair();
+      currentExercise = nx.name;
+      currentModifier = nx.mod;
+
+      nextExercise = "—";
+      nextModifier = null;
+
+      remaining = s.workSec;
+      return;
+    }
+
+    // Dernier round terminé -> cooldown ou done (sans dernier repos)
+    if (s.cooldownSec > 0) {
+      phase = "cooldown";
+      remaining = s.cooldownSec;
+
+      currentExercise = "—";
+      currentModifier = null;
+      nextExercise = "—";
+      nextModifier = null;
+      return;
+    }
+
+    phase = "done";
+    finish();
     return;
   }
 
-  phase = "done";
-  finish();
-  return;
-}
+  // === REST -> WORK / COOLDOWN / DONE ===
+  if (phase === "rest") {
+    // Après repos: on a forcément un prochain work (puisqu'on ne fait pas de repos après le dernier)
+    phase = "work";
+    roundIndex += 1;
 
+    if (nextExercise && nextExercise !== "—") {
+      currentExercise = nextExercise;
+      currentModifier = nextModifier;
+    } else {
+      const nx = pickPair();
+      currentExercise = nx.name;
+      currentModifier = nx.mod;
+    }
+
+    nextExercise = "—";
+    nextModifier = null;
+
+    remaining = s.workSec;
+    return;
+  }
 
   // === COOLDOWN -> DONE ===
   if (phase === "cooldown") {
