@@ -93,6 +93,63 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Fente avant", enabled: true, equipment: "sol", level: "simple" },
   { id: uid(), name: "Fente latérale", enabled: true, equipment: "sol", level: "simple" },
 
+  // BJJ Solo Drill
+  { id: uid(), name: "Rock and kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Kicking up", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "180 Rock", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Rocking S Sit", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Alternating S Sit", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "The Gyro", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Rope Pull", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Backward shrimp", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "The Granby", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Backward Shoulders Rolls", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Forward Shoulders Rolls", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Explosive Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Single Leg Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Bridge & Turn", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Technical Stand-Up", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Shrimp", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Shrimp - 1 pied sur place", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Shrimp - 1 pied reculons", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Shrimp Alternate Foot", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Leg Circles", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Windshield whipper", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Shoulders walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Crab Walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "180 Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Double Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Monkey Shuffle", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Short Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Quick Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Single Side Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Knee Cut With a Follow Through", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Standing Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Long Step", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Pepper Mill", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Pepper Mill - Elbow", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Pepper Mill - Shoulder", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Beer Crawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Donkey Kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Scorpion Kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Ski Slopes", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Spiderman Pushups", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Inch Worm", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Army Crawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Step Up from Kneeling", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Standing up from Kneeling", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Double Leg Takedown", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Walrus Walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Sprawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Sprawl + Double Leg", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Sumo Step", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Single Foot Hop", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Seated Breakfall", enabled: true, equipment: "BJJ_solo", level: "simple" },
+  { id: uid(), name: "Breakfall from squat", enabled: true, equipment: "BJJ_solo", level: "simple" },
+
 ];
 
 
@@ -611,6 +668,7 @@ function equipmentLabel(v) {
   if (v === "corde") return "Corde à sauter";
   if (v === "punching_bag") return "Punching bag";
   if (v === "sol") return "Exercices au sol";
+  if (v === "BBJ_solo") return "Drill solo BJJ";
   if (v === "aucun") return "Sans équipement";
   return v;
 }
@@ -699,7 +757,7 @@ function renderExerciseChecklist() {
   }
 
   // Ordre souhaité (optionnel)
-  const equipmentOrder = ["aucun", "corde", "punching_bag", "sol"];
+  const equipmentOrder = ["aucun", "corde", "punching_bag", "sol", "BJJ_solo"];
   const levelOrder = ["simple", "moyen", "avance"];
 
   const equipments = [...groups.keys()].sort(
