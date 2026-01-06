@@ -27,7 +27,7 @@ function uid() {
 
 const DEFAULT_EXERCISES = [
 
-  // Exercices pour la corde à sauter
+  // Exercices pour la corde à sauter (à améliorer)
   { id: uid(), name: "Base", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Side straddle", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Ciseaux", enabled: true, equipment: "corde", level: "simple" },
