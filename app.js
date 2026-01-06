@@ -30,7 +30,7 @@ const DEFAULT_EXERCISES = [
   // Exercices pour la corde à sauter
   { id: uid(), name: "Base", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Side straddle", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "ciseaux", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "Ciseaux", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Genoux", enabled: true, equipment: "corde", level: "moyen" },
   { id: uid(), name: "Course", enabled: true, equipment: "corde", level: "moyen" },
   { id: uid(), name: "Sur 1 pied", enabled: true, equipment: "corde", level: "moyen" },
@@ -41,7 +41,7 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Croisé-boxer", enabled: true, equipment: "corde", level: "avance" },
   { id: uid(), name: "Croisé-course", enabled: true, equipment: "corde", level: "avance" },
   { id: uid(), name: "Happy feet", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "boxer", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "Boxer", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Entre les jambes", enabled: true, equipment: "corde", level: "avance" },
   { id: uid(), name: "X-motion", enabled: true, equipment: "corde", level: "moyen" },
   { id: uid(), name: "Shuffle", enabled: true, equipment: "corde", level: "simple" },
@@ -68,6 +68,30 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Switch Kick", enabled: true, equipment: "punching_bag", level: "simple" }, 
   { id: uid(), name: "Lead Tead", enabled: true, equipment: "punching_bag", level: "simple" }, 
   { id: uid(), name: "Rear Tead", enabled: true, equipment: "punching_bag", level: "simple" }, 
+
+  // Exercises au sol
+  { id: uid(), name: "Squat", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Push-up large (pectoraux)", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Push-up serré / diamond (triceps)", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Push-up pike (épaules)", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Push-up pieds surélevés", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Push-up lent (tempo contrôlé)", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Push-up", enabled: true, equipment: "sol", level: "simple" },
+  { id: uid(), name: "Burpees", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Jumping jack", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Crunch", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Bicycle crunch", enabled: true, equipment: "sol", level: "simple" },
+  { id: uid(), name: "Crunch", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Mountain climber", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Nage ventre", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Nage dos", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Planche - coude", enabled: true, equipment: "sol", level: "simple" },
+  { id: uid(), name: "Planche - main", enabled: true, equipment: "sol", level: "simple" },
+  { id: uid(), name: "Planche sur le côté", enabled: true, equipment: "sol", level: "simple" },
+  { id: uid(), name: "Superman hold", enabled: true, equipment: "sol", level: "simple" },
+  { id: uid(), name: "Fente avant", enabled: true, equipment: "sol", level: "simple" },
+  { id: uid(), name: "Fente latérale", enabled: true, equipment: "sol", level: "simple" },
+
 ];
 
 
@@ -585,6 +609,7 @@ function usePreset(presetId) {
 function equipmentLabel(v) {
   if (v === "corde") return "Corde à sauter";
   if (v === "punching_bag") return "Punching bag";
+  if (v === "sol") return "Exercices au sol";
   if (v === "aucun") return "Sans équipement";
   return v;
 }
@@ -673,7 +698,7 @@ function renderExerciseChecklist() {
   }
 
   // Ordre souhaité (optionnel)
-  const equipmentOrder = ["aucun", "corde", "punching_bag"];
+  const equipmentOrder = ["aucun", "corde", "punching_bag", "sol"];
   const levelOrder = ["simple", "moyen", "avance"];
 
   const equipments = [...groups.keys()].sort(
@@ -758,7 +783,7 @@ function initAudio() {
  * Bip court et discret.
  * On utilise un oscillateur -> pas besoin de fichiers audio.
  */
-function beep({ freq = 880, durationMs = 90, volume = 0.12 } = {}) {
+function beep({ freq = 880, durationMs = 90, volume = 0.15 } = {}) {
   if (!audioCtx) return;
 
   const t0 = audioCtx.currentTime;
