@@ -747,7 +747,7 @@ function renderExerciseChecklist() {
  * (sinon, on tombe sur une liste vide -> crash du random).
  */
 function enabledExercises() {
-  const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
+  const eq = el.sessionEquipment ? el.sessionEquipment.value : "aucun";
   if (eq === "none") return []; // minuteur simple -> pas d'exercices
 
   const enabled = exercisesState.filter(e => e.enabled);
