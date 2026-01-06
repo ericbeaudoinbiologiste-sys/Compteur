@@ -239,8 +239,8 @@ modifierPill: document.getElementById("modifierPill"),
   exLevel: document.getElementById("exLevel"),
   addExerciseBtn: document.getElementById("addExerciseBtn"),
   
-  filterEquipment: document.getElementById("filterEquipment"),
-  filterLevel: document.getElementById("filterLevel"),
+  // filterEquipment: document.getElementById("filterEquipment"),
+  // filterLevel: document.getElementById("filterLevel"),
 
   // liste presets
   presetList: document.getElementById("presetList"),
