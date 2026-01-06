@@ -51,6 +51,7 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Side-step", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Cloche", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Heel tap", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "Backward", enabled: true, equipment: "corde", level: "simple" },
   // Exercices pour le punching bag
   { id: uid(), name: "1-2", enabled: true, equipment: "punching_bag", level: "simple" },
   { id: uid(), name: "1-1-2", enabled: true, equipment: "punching_bag", level: "simple" },
@@ -802,6 +803,10 @@ function beep({ freq = 880, durationMs = 90, volume = 0.15 } = {}) {
   osc.start(t0);
   osc.stop(t0 + durationMs / 1000 + 0.02);
 }
+function vibrate(pattern = 50) {
+  if (!("vibrate" in navigator)) return;
+  navigator.vibrate(pattern);
+}
 
 /***********************
  * WAKE LOCK (anti-veille)
@@ -1081,6 +1086,7 @@ function tick() {
   // Bips dernières secondes du travail (ex: 3-2-1)
   if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) {
     beep({ freq: 880, volume: 0.04 });
+    vibrate(40);
   }
 
   updateUI();
