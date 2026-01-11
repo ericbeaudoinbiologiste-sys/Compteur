@@ -1092,10 +1092,7 @@ function settingsFromUI() {
     el.repeatScope ? String(el.repeatScope.value || "all") : "all";
 
   // Labels des côtés (tu pourras les rendre éditables plus tard)
-    const repeatLabels =
-      (el.repeatLabelsPreset?.value === "GD")
-        ? ["Gauche", "Droite"]
-        : ["Côté A", "Côté B"];
+    const repeatLabels = ["G","D"],
   repeatModeEnabled: !!el.repeatModeEnabled?.checked,
   repeatScope: String(el.repeatScope?.value ?? "all"),
   repeatLabels,
@@ -1578,17 +1575,25 @@ el.sessionEquipment?.addEventListener("change", () => {
    *********/
 
   // Checklist: écouter les changements (event delegation)
-  el.exerciseList.addEventListener("change", (ev) => {
+ el.exerciseList.addEventListener("change", (ev) => {
   const t = ev.target;
   if (!(t instanceof HTMLInputElement)) return;
+
   const id = t.dataset.id;
   if (!id) return;
 
   const ex = exercisesState.find(x => x.id === id);
   if (!ex) return;
 
-  ex.enabled = t.checked;
-  saveSettings(settingsFromUI()); // optionnel: autosave
+  const field = String(t.dataset.field || "enabled");
+
+  if (field === "repeat") {
+    ex.repeatThisExercise = t.checked;
+  } else {
+    ex.enabled = t.checked;
+  }
+
+  saveSettings(settingsFromUI()); // autosave
 });
 
   const saveModsIfAny = () => saveSettings(settingsFromUI());
