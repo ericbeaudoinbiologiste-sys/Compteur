@@ -105,6 +105,34 @@
   <p class="muted">Si le total n’est pas 100, l’app normalise automatiquement.</p>
 </div>
 
+      <!-- Répétition Gauche-Droite -->
+      <h3 class="h3">Répétition (2 côtés)</h3>
+<div class="cardSub">
+  <div class="row">
+    <label class="check">
+      <input id="repeatModeEnabled" type="checkbox" />
+      <span>Activer la répétition (chaque exercice 2 fois)</span>
+    </label>
+  </div>
+
+  <div class="grid" style="margin-top: 8px;">
+    <label>Appliquer à
+      <select id="repeatScope">
+        <option value="all">Tous les exercices</option>
+        <option value="selected">Exercices sélectionnés</option>
+      </select>
+    </label>
+
+    <label>Libellés des côtés (optionnel)
+      <select id="repeatLabelsPreset">
+        <option value="AB">Côté A / Côté B</option>
+        <option value="GD">Gauche / Droite</option>
+      </select>
+    </label>
+  </div>
+</div>
+
+
       <!-- Conteneur de toute la partie exercices -->
       <div id="exerciseSection">
       <h3 class="h3">Filtrer les exercices</h3>
