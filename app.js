@@ -165,6 +165,10 @@ const DEFAULTS = {
   exercises: DEFAULT_EXERCISES,
   sessionEquipment: "none", 
   modifiers: defaultModifiersForEquipment("corde"), // valeur par défaut (sera remplacée selon eq)
+  repeatModeEnabled: false,
+  repeatScope: "all", // "all" ou "selected"
+  repeatLabels: ["G", "D"],
+
 
 
 };
@@ -444,6 +448,53 @@ function shouldRepeatExercise(ex, settings) {
   // selected
   return !!ex.repeatThisExercise;
 }
+// État: si un exercice doit repasser une 2e fois, on le garde ici
+let pendingRepeat = null; // { ex, sideIndex: 2 }
+
+// Labels de côté (tu peux changer)
+function sideLabel(sideIndex, s) {
+  const labels = s.repeatLabels && s.repeatLabels.length === 2
+    ? s.repeatLabels
+    : ["Côté A", "Côté B"];
+  return labels[sideIndex - 1] || `Côté ${sideIndex}`;
+}
+
+function formatExerciseName(ex, sideIndex, s) {
+  if (!ex) return "—";
+  if (!sideIndex) return ex.name;
+  return `${ex.name} — ${sideLabel(sideIndex, s)}`;
+}
+
+// Retourne { name, mod } comme ton pickPair(), mais gère la répétition
+function pickWorkStepWithRepeat(s) {
+  // 1) Si on a une répétition en attente => on renvoie le 2e côté
+  if (pendingRepeat?.ex) {
+    const ex = pendingRepeat.ex;
+    pendingRepeat = null;
+
+    return {
+      name: formatExerciseName(ex, 2, s),
+      mod: pickModifierForSettings(s)
+    };
+  }
+
+  // 2) Sinon tirage normal
+  const ex = pickExerciseWithReplacement();
+  if (!ex) return { name: "—", mod: pickModifierForSettings(s) };
+
+  // 3) Si cet exercice doit être répété => on programme le 2e passage
+  if (shouldRepeatExercise(ex, s)) {
+    pendingRepeat = { ex, sideIndex: 2 };
+    return {
+      name: formatExerciseName(ex, 1, s),
+      mod: pickModifierForSettings(s)
+    };
+  }
+
+  // 4) Sinon pas de répétition
+  return { name: ex.name, mod: pickModifierForSettings(s) };
+}
+
 
 
 
@@ -941,6 +992,10 @@ function loadSettings() {
       exercises: normalizeExercises(obj.exercises),
       sessionEquipment: String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment),
       modifiers: Array.isArray(obj.modifiers) ? obj.modifiers : defaultModifiersForEquipment(String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment)),
+      repeatModeEnabled: !!obj.repeatModeEnabled,
+      repeatScope: String(obj.repeatScope ?? "all"),
+      repeatLabels: Array.isArray(obj.repeatLabels) ? obj.repeatLabels : ["G", "D"],
+
 
 
     };
@@ -956,6 +1011,16 @@ function saveSettings(s) {
 function settingsFromUI() {
   const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
 
+  // --- Répétition: fallback si l'UI n'est pas encore branchée ---
+  const repeatModeEnabled =
+    el.repeatModeEnabled ? !!el.repeatModeEnabled.checked : false;
+
+  const repeatScope =
+    el.repeatScope ? String(el.repeatScope.value || "all") : "all";
+
+  // Labels des côtés (tu pourras les rendre éditables plus tard)
+  const repeatLabels = ["G", "D"];
+
   return {
     prepSec: clampInt(el.prepSec.value, 0, 3600),
     workSec: clampInt(el.workSec.value, 1, 3600),
@@ -964,22 +1029,30 @@ function settingsFromUI() {
     rounds: clampInt(el.rounds.value, 1, 200),
     beepLast: clampInt(el.beepLast.value, 0, 10),
 
-    // Nouveau: type de séance (none / corde / punching_bag)
+    // Type de séance (none / corde / punching_bag / etc.)
     sessionEquipment: eq,
 
-    // Nouveau: modificateurs du modèle (dépend de l'équipement)
+    // Modificateurs (dépend de l'équipement)
     modifiers: getModifiersFromUI(eq),
 
-    // Exercices complets (important: garder equipment/level)
+    // --- Nouveau: paramètres répétition ---
+    repeatModeEnabled,
+    repeatScope,
+    repeatLabels,
+
+    // Exercices complets (important: garder equipment/level + repeatThisExercise)
     exercises: exercisesState.map(e => ({
       id: e.id,
       name: e.name,
       enabled: !!e.enabled,
       equipment: e.equipment,
-      level: e.level
+      level: e.level,
+      // Nouveau champ (sera utile quand tu ajouteras la case "répéter cet exercice")
+      repeatThisExercise: !!e.repeatThisExercise
     }))
   };
 }
+
 
 function settingsToUI(s) {
   // 1) Durées + paramètres
@@ -1051,18 +1124,21 @@ function startSession() {
   isRunning = true;
   isPaused = false;
 
+  pendingRepeat = null;
+
   // Déclenché suite au clic -> OK pour mobile
   initAudio();
   requestWakeLock();
   // Préparer le 1er exercice (utile pour l'afficher dès la Préparation)
-  if (s.sessionEquipment !== "none") {
-    const nx = pickExerciseWithReplacement();
-    nextExercise = nx ? nx.name : "—";
-    nextModifier = pickModifierForSettings(s);
-  } else {
-    nextExercise = "—";
-    nextModifier = null;
-  }
+if (s.sessionEquipment !== "none") {
+  const nx = pickWorkStepWithRepeat(s);
+  nextExercise = nx.name;
+  nextModifier = nx.mod;
+} else {
+  nextExercise = "—";
+  nextModifier = null;
+}
+
 
 
   // Définir première phase
@@ -1074,8 +1150,10 @@ function startSession() {
   } else {
     phase = "work";
     roundIndex = 1;
-    const ex = pickExerciseWithReplacement();
-    currentExercise = ex ? ex.name : "—";
+    const nx = pickWorkStepWithRepeat(s);
+    currentExercise = nx.name;
+    currentModifier = nx.mod;
+
     remaining = s.workSec;
   }
 
@@ -1177,13 +1255,8 @@ function tick() {
 function transitionNext() {
   const s = loadSettings(); // settings verrouillés au start
 
-  const pickPair = () => {
-    const ex = pickExerciseWithReplacement();      // objet ou null
-    return {
-      name: ex ? ex.name : "—",
-      mod: pickModifierForSettings(s)              // null si equipment=none
-    };
-  };
+const pickPair = () => pickWorkStepWithRepeat(s);
+
 
   // === PREP -> WORK ===
   if (phase === "prep") {
