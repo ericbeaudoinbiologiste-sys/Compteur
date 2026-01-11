@@ -51,7 +51,7 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Side-step", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Cloche", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Heel tap", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Backward", enabled: true, equipment: "corde", level: "simple" },
+  { id: uid(), name: "Backward", enabled: true, equipment: "corde", level: "avance" },
   // Exercices pour le punching bag
   { id: uid(), name: "1-2", enabled: true, equipment: "punching_bag", level: "simple" },
   { id: uid(), name: "1-1-2", enabled: true, equipment: "punching_bag", level: "simple" },
@@ -92,6 +92,7 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Superman hold", enabled: true, equipment: "sol", level: "simple" },
   { id: uid(), name: "Fente avant", enabled: true, equipment: "sol", level: "simple" },
   { id: uid(), name: "Fente latérale", enabled: true, equipment: "sol", level: "simple" },
+  { id: uid(), name: "Death bug", enabled: true, equipment: "sol", level: "simple" },
 
   // BJJ Solo Drill
   { id: uid(), name: "Rock and kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
@@ -241,7 +242,6 @@ function ensureDefaultPresetIfEmpty() {
   store.lastPresetId = defaultPreset.id;
   savePresetStore(store);
 }
-
 
 
 /***********************
@@ -436,6 +436,15 @@ function pickModifierForSettings(s) {
   const mods = Array.isArray(s.modifiers) ? s.modifiers : defaultModifiersForEquipment(eq);
   return pickWeighted(mods);
 }
+
+// Pour répétition gauche-droite
+function shouldRepeatExercise(ex, settings) {
+  if (!settings.repeatModeEnabled) return false;
+  if (settings.repeatScope === "all") return true;
+  // selected
+  return !!ex.repeatThisExercise;
+}
+
 
 
 /***********************
