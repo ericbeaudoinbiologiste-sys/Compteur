@@ -1084,17 +1084,11 @@ function saveSettings(s) {
 function settingsFromUI() {
   const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
 
-  // --- Répétition: fallback si l'UI n'est pas encore branchée ---
-  const repeatModeEnabled =
-    el.repeatModeEnabled ? !!el.repeatModeEnabled.checked : false;
+  const repeatModeEnabled = el.repeatModeEnabled ? !!el.repeatModeEnabled.checked : false;
+  const repeatScope = el.repeatScope ? String(el.repeatScope.value || "all") : "all";
 
-  const repeatScope =
-    el.repeatScope ? String(el.repeatScope.value || "all") : "all";
-
-  // Labels des côtés (tu pourras les rendre éditables plus tard)
-    const repeatLabels = ["G","D"],
-  repeatModeEnabled: !!el.repeatModeEnabled?.checked,
-  repeatScope: String(el.repeatScope?.value ?? "all"),
+  // Toujours Gauche/Droite (comme tu veux)
+  const repeatLabels = ["G", "D"]; // ou ["Gauche","Droite"] si tu préfères l'affichage complet
 
   return {
     prepSec: clampInt(el.prepSec.value, 0, 3600),
@@ -1110,7 +1104,7 @@ function settingsFromUI() {
     // Modificateurs (dépend de l'équipement)
     modifiers: getModifiersFromUI(eq),
 
-    // --- Nouveau: paramètres répétition ---
+    // Répétition
     repeatModeEnabled,
     repeatScope,
     repeatLabels,
@@ -1122,11 +1116,11 @@ function settingsFromUI() {
       enabled: !!e.enabled,
       equipment: e.equipment,
       level: e.level,
-      // Nouveau champ (sera utile quand tu ajouteras la case "répéter cet exercice")
-      repeatThisExercise: !!e.repeatThisExercise,
+      repeatThisExercise: !!e.repeatThisExercise
     }))
   };
 }
+
 
 
 function settingsToUI(s) {
