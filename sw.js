@@ -1,5 +1,5 @@
 // sw.js — PWA cache versionné
-const VERSION = "v12.4";                 // <-- incrémente quand tu déploies
+const VERSION = "v12.5";                 // <-- incrémente quand tu déploies
 const CACHE = `timer-${VERSION}`;
 
 const ASSETS = [
