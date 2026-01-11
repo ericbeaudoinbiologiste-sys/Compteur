@@ -11,9 +11,6 @@
  * 5) Empêche la veille (Screen Wake Lock) si supporté
  * 6) Sauvegarde des réglages + exercices dans localStorage
  *
- * IMPORTANT:
- * - L'audio et le wake lock doivent être déclenchés après une interaction utilisateur.
- * - Sur iOS, le wake lock et/ou l'audio peuvent être moins fiables selon la version.
  ************************************************************/
 
 /***********************
