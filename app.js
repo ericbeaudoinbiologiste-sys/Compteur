@@ -1163,7 +1163,18 @@ function settingsToUI(s) {
   //    - cache/affiche la section exercices
   //    - force le filtre équipement
   //    - rerender checklist
+  // Répétition: remettre l'UI en cohérence avec le preset
+if (el.repeatModeEnabled) el.repeatModeEnabled.checked = !!s.repeatModeEnabled;
+if (el.repeatScope) el.repeatScope.value = String(s.repeatScope ?? "all");
+
+// Si tu as un select de labels preset, optionnel:
+if (el.repeatLabelsPreset) {
+  // toi tu veux toujours G/D, donc on force GD
+  el.repeatLabelsPreset.value = "GD";
+}
+
 applyEquipmentUI({ resetChecks: false });
+  renderExerciseChecklist();
 }
 
 
@@ -1622,6 +1633,17 @@ el.sessionEquipment?.addEventListener("change", () => {
   // sauvegarde + rerender
   saveSettings(settingsFromUI());
   renderExerciseChecklist();
+});
+
+  // Pour les répétitions d'exerices simple
+  el.repeatModeEnabled?.addEventListener("change", () => {
+  saveSettings(settingsFromUI());
+  renderExerciseChecklist();   // IMPORTANT: fait apparaître/disparaître ↻
+});
+
+el.repeatScope?.addEventListener("change", () => {
+  saveSettings(settingsFromUI());
+  renderExerciseChecklist();   // IMPORTANT
 });
 
 
