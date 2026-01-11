@@ -1095,7 +1095,6 @@ function settingsFromUI() {
     const repeatLabels = ["G","D"],
   repeatModeEnabled: !!el.repeatModeEnabled?.checked,
   repeatScope: String(el.repeatScope?.value ?? "all"),
-  repeatLabels,
 
   return {
     prepSec: clampInt(el.prepSec.value, 0, 3600),
@@ -1124,7 +1123,7 @@ function settingsFromUI() {
       equipment: e.equipment,
       level: e.level,
       // Nouveau champ (sera utile quand tu ajouteras la case "répéter cet exercice")
-      repeatThisExercise: !!e.repeatThisExercise
+      repeatThisExercise: !!e.repeatThisExercise,
     }))
   };
 }
