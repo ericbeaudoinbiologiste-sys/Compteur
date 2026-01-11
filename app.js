@@ -278,6 +278,9 @@ const el = {
   bagSpeedPct: document.getElementById("bagSpeedPct"),
   bagPowerPct: document.getElementById("bagPowerPct"),
   bagTechPct: document.getElementById("bagTechPct"),
+  repeatModeEnabled: document.getElementById("repeatModeEnabled"),
+  repeatScope: document.getElementById("repeatScope"),
+  repeatLabelsPreset: document.getElementById("repeatLabelsPreset"),
 
 // Affichage modificateur
 modifierPill: document.getElementById("modifierPill"),
@@ -807,6 +810,13 @@ function renderExerciseChecklist() {
     return;
   }
 
+  // Afficher la case "↻" seulement si:
+  // - la répétition est activée
+  // - et on est en mode "selected"
+  const showRepeatToggle =
+    !!el.repeatModeEnabled?.checked &&
+    String(el.repeatScope?.value ?? "all") === "selected";
+
   // groupement: equipment -> level -> items
   const groups = new Map();
   for (const ex of list) {
@@ -821,7 +831,7 @@ function renderExerciseChecklist() {
   const levelOrder = ["simple", "moyen", "avance"];
 
   const equipments = [...groups.keys()].sort(
-    (a,b) => (equipmentOrder.indexOf(a) - equipmentOrder.indexOf(b)) || a.localeCompare(b)
+    (a, b) => (equipmentOrder.indexOf(a) - equipmentOrder.indexOf(b)) || a.localeCompare(b)
   );
 
   for (const eq of equipments) {
@@ -832,7 +842,7 @@ function renderExerciseChecklist() {
 
     const byLevel = groups.get(eq);
     const levels = [...byLevel.keys()].sort(
-      (a,b) => (levelOrder.indexOf(a) - levelOrder.indexOf(b)) || a.localeCompare(b)
+      (a, b) => (levelOrder.indexOf(a) - levelOrder.indexOf(b)) || a.localeCompare(b)
     );
 
     for (const lvl of levels) {
@@ -848,9 +858,30 @@ function renderExerciseChecklist() {
       for (const ex of byLevel.get(lvl)) {
         const row = document.createElement("label");
         row.className = "check";
+
+        // Checkbox principal = "inclure l'exercice"
+        // Checkbox ↻ = "répéter cet exercice" (seulement si showRepeatToggle)
         row.innerHTML = `
-          <input type="checkbox" ${ex.enabled ? "checked" : ""} data-id="${ex.id}">
+          <input type="checkbox" ${ex.enabled ? "checked" : ""} data-id="${ex.id}" data-field="enabled">
           <span>${ex.name}</span>
+
+          ${
+            showRepeatToggle
+              ? `
+                <span class="pill"
+                      style="display:inline-flex; align-items:center; gap:6px; padding:2px 8px;"
+                      title="Répéter cet exercice (G/D)">
+                  <input type="checkbox"
+                         ${ex.repeatThisExercise ? "checked" : ""}
+                         data-id="${ex.id}"
+                         data-field="repeat"
+                         style="width:16px; height:16px; margin:0;">
+                  <span style="font-weight:700;">↻</span>
+                </span>
+              `
+              : ""
+          }
+
           <span class="pill">${equipmentLabel(ex.equipment)} · ${levelLabel(ex.level)}</span>
         `;
         wrap.appendChild(row);
@@ -858,6 +889,7 @@ function renderExerciseChecklist() {
     }
   }
 }
+
 
 
 /**
@@ -1010,7 +1042,7 @@ function loadSettings() {
 
     const repeatLabels = (Array.isArray(obj.repeatLabels) && obj.repeatLabels.length === 2)
       ? [String(obj.repeatLabels[0]), String(obj.repeatLabels[1])]
-      : ["Côté A", "Côté B"];
+      : ["G", "D"];
 
     // Modificateurs: si absents, fallback sur défauts selon l'équipement
     const modifiers = Array.isArray(obj.modifiers)
@@ -1060,7 +1092,13 @@ function settingsFromUI() {
     el.repeatScope ? String(el.repeatScope.value || "all") : "all";
 
   // Labels des côtés (tu pourras les rendre éditables plus tard)
-  const repeatLabels = ["G", "D"];
+    const repeatLabels =
+      (el.repeatLabelsPreset?.value === "GD")
+        ? ["Gauche", "Droite"]
+        : ["Côté A", "Côté B"];
+  repeatModeEnabled: !!el.repeatModeEnabled?.checked,
+  repeatScope: String(el.repeatScope?.value ?? "all"),
+  repeatLabels,
 
   return {
     prepSec: clampInt(el.prepSec.value, 0, 3600),
@@ -1447,6 +1485,35 @@ function init() {
   const s = loadSettings();
   settingsToUI(s);
   renderExerciseChecklist();
+
+  /*********
+ * UI Répétition
+ *********/
+function syncRepeatUI() {
+  if (!el.repeatModeEnabled || !el.repeatScope || !el.repeatLabelsPreset) return;
+
+  const on = el.repeatModeEnabled.checked;
+  el.repeatScope.disabled = !on;
+  el.repeatLabelsPreset.disabled = !on;
+}
+
+// listeners
+el.repeatModeEnabled?.addEventListener("change", () => {
+  syncRepeatUI();
+  saveSettings(settingsFromUI());
+});
+
+el.repeatScope?.addEventListener("change", () => {
+  saveSettings(settingsFromUI());
+});
+
+el.repeatLabelsPreset?.addEventListener("change", () => {
+  saveSettings(settingsFromUI());
+});
+
+// état initial
+syncRepeatUI();
+
 
 
   // Presets: s'assurer qu'il y a au moins un modèle puis afficher la liste
