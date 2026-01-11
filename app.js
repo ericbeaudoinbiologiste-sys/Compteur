@@ -962,25 +962,60 @@ document.addEventListener("visibilitychange", async () => {
  ************************/
 
 function normalizeExercises(arr) {
-  // Conserve (name, enabled) et protège contre des données invalides
+  // Conserve (name, enabled, equipment, level, repeatThisExercise)
+  // et protège contre des données invalides
   if (!Array.isArray(arr) || arr.length === 0) {
-    return DEFAULT_EXERCISES.map(x => ({ ...x }));
+    return DEFAULT_EXERCISES.map(x => ({
+      ...x,
+      repeatThisExercise: !!x.repeatThisExercise
+    }));
   }
-  return arr.map(e => ({
-    id: String(e.id ?? uid()),
-    name: String(e.name ?? "").trim(),
-    enabled: !!e.enabled,
-    equipment: String(e.equipment ?? "aucun"),
-    level: String(e.level ?? "simple")
-  })).filter(e => e.name.length > 0);
+
+  return arr
+    .map(e => ({
+      id: String(e.id ?? uid()),
+      name: String(e.name ?? "").trim(),
+      enabled: !!e.enabled,
+      equipment: String(e.equipment ?? "aucun"),
+      level: String(e.level ?? "simple"),
+
+      // Nouveau: répétition par exercice (persistée)
+      repeatThisExercise: !!e.repeatThisExercise
+    }))
+    .filter(e => e.name.length > 0);
 }
 
 function loadSettings() {
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if (!raw) return { ...DEFAULTS, exercises: DEFAULT_EXERCISES };
+    if (!raw) {
+      // Important: retourner un objet complet et cohérent
+      return {
+        ...DEFAULTS,
+        exercises: DEFAULT_EXERCISES.map(x => ({ ...x, repeatThisExercise: !!x.repeatThisExercise }))
+      };
+    }
 
     const obj = JSON.parse(raw);
+
+    const sessionEquipment = String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment);
+
+    // Répétition: valeurs tolérantes + defaults
+    const repeatModeEnabled = !!obj.repeatModeEnabled;
+
+    const repeatScopeRaw = String(obj.repeatScope ?? "all").toLowerCase();
+    const repeatScope = (repeatScopeRaw === "selected" || repeatScopeRaw === "all")
+      ? repeatScopeRaw
+      : "all";
+
+    const repeatLabels = (Array.isArray(obj.repeatLabels) && obj.repeatLabels.length === 2)
+      ? [String(obj.repeatLabels[0]), String(obj.repeatLabels[1])]
+      : ["Côté A", "Côté B"];
+
+    // Modificateurs: si absents, fallback sur défauts selon l'équipement
+    const modifiers = Array.isArray(obj.modifiers)
+      ? obj.modifiers
+      : defaultModifiersForEquipment(sessionEquipment);
 
     return {
       prepSec: clampInt(obj.prepSec ?? DEFAULTS.prepSec, 0, 3600),
@@ -989,20 +1024,26 @@ function loadSettings() {
       cooldownSec: clampInt(obj.cooldownSec ?? DEFAULTS.cooldownSec, 0, 3600),
       rounds: clampInt(obj.rounds ?? DEFAULTS.rounds, 1, 200),
       beepLast: clampInt(obj.beepLast ?? DEFAULTS.beepLast, 0, 10),
+
       exercises: normalizeExercises(obj.exercises),
-      sessionEquipment: String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment),
-      modifiers: Array.isArray(obj.modifiers) ? obj.modifiers : defaultModifiersForEquipment(String(obj.sessionEquipment ?? DEFAULTS.sessionEquipment)),
-      repeatModeEnabled: !!obj.repeatModeEnabled,
-      repeatScope: String(obj.repeatScope ?? "all"),
-      repeatLabels: Array.isArray(obj.repeatLabels) ? obj.repeatLabels : ["G", "D"],
 
+      sessionEquipment,
+      modifiers,
 
-
+      // Nouveau: répétition
+      repeatModeEnabled,
+      repeatScope,
+      repeatLabels
     };
   } catch {
-    return { ...DEFAULTS, exercises: DEFAULT_EXERCISES };
+    // fallback robuste
+    return {
+      ...DEFAULTS,
+      exercises: DEFAULT_EXERCISES.map(x => ({ ...x, repeatThisExercise: !!x.repeatThisExercise }))
+    };
   }
 }
+
 
 function saveSettings(s) {
   localStorage.setItem(LS_KEY, JSON.stringify(s));
