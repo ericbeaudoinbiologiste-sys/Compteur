@@ -728,7 +728,7 @@ function equipmentLabel(v) {
   if (v === "corde") return "Corde à sauter";
   if (v === "punching_bag") return "Punching bag";
   if (v === "sol") return "Exercices au sol";
-  if (v === "BBJ_solo") return "Drill solo BJJ";
+  if (v === "BJJ_solo") return "Drill solo BJJ";
   if (v === "aucun") return "Sans équipement";
   return v;
 }
@@ -742,7 +742,15 @@ function levelLabel(v) {
 
 // 2) Filtrage pour l'affichage (UI)
 function getFilteredExercises() {
-  const eq = el.filterEquipment ? el.filterEquipment.value : "all";
+  // IMPORTANT: on suit le type de séance choisi
+  const sessionEq = el.sessionEquipment ? el.sessionEquipment.value : "none";
+
+  // Si une séance d'équipement est choisie, on force la liste sur cet équipement
+  // (l’utilisateur ne voit pas les autres catégories)
+  const eq = (sessionEq && sessionEq !== "none")
+    ? sessionEq
+    : (el.filterEquipment ? el.filterEquipment.value : "all");
+
   const lvl = el.filterLevel ? el.filterLevel.value : "all";
 
   return exercisesState.filter(ex => {
@@ -751,6 +759,7 @@ function getFilteredExercises() {
     return true;
   });
 }
+
 
 // 3) Rendu de la checklist (utilise les helpers ci-dessus)
 function applyEquipmentUI({ resetChecks = false } = {}) {
@@ -1604,6 +1613,17 @@ el.sessionEquipment?.addEventListener("change", () => {
   el.bagSpeedPct?.addEventListener("change", saveModsIfAny);
   el.bagPowerPct?.addEventListener("change", saveModsIfAny);
   el.bagTechPct?.addEventListener("change", saveModsIfAny);
+  
+  el.filterLevel?.addEventListener("change", () => {
+  renderExerciseChecklist();
+  saveSettings(settingsFromUI());
+});
+
+el.filterEquipment?.addEventListener("change", () => {
+  renderExerciseChecklist();
+  saveSettings(settingsFromUI());
+});
+
 
 
   // Ajouter un exercices
@@ -1664,14 +1684,6 @@ el.repeatScope?.addEventListener("change", () => {
   showPresets();
 });
 
-  /*********
-   * Service Worker
-   *********/
-  // if ("serviceWorker" in navigator) {
-  //   window.addEventListener("load", () => {
-  //     navigator.serviceWorker.register("./sw.js").catch(() => {});
-  //   });
-  // }
 }
 
 
