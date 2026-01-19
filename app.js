@@ -49,6 +49,7 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Cloche", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Heel tap", enabled: true, equipment: "corde", level: "simple" },
   { id: uid(), name: "Backward", enabled: true, equipment: "corde", level: "avance" },
+  { id: uid(), name: "Freestyle", enabled: true, equipment: "corde", level: "simple" },
   // Exercices pour le punching bag
   { id: uid(), name: "1-2", enabled: true, equipment: "punching_bag", level: "simple" },
   { id: uid(), name: "1-1-2", enabled: true, equipment: "punching_bag", level: "simple" },
@@ -66,7 +67,7 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Switch Kick", enabled: true, equipment: "punching_bag", level: "simple" }, 
   { id: uid(), name: "Lead Tead", enabled: true, equipment: "punching_bag", level: "simple" }, 
   { id: uid(), name: "Rear Tead", enabled: true, equipment: "punching_bag", level: "simple" }, 
-
+  { id: uid(), name: "Shadow boxing", enabled: true, equipment: "punching_bag", level: "simple" }, 
   // Exercises au sol
   { id: uid(), name: "Squat", enabled: true, equipment: "sol", level: "simple" }, 
   { id: uid(), name: "Push-up large (pectoraux)", enabled: true, equipment: "sol", level: "simple" }, 
@@ -80,6 +81,7 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Crunch", enabled: true, equipment: "sol", level: "simple" }, 
   { id: uid(), name: "Bicycle crunch", enabled: true, equipment: "sol", level: "simple" },
   { id: uid(), name: "Crunch", enabled: true, equipment: "sol", level: "simple" }, 
+  { id: uid(), name: "Russian crunch", enabled: true, equipment: "sol", level: "simple" }, 
   { id: uid(), name: "Mountain climber", enabled: true, equipment: "sol", level: "simple" }, 
   { id: uid(), name: "Nage ventre", enabled: true, equipment: "sol", level: "simple" }, 
   { id: uid(), name: "Nage dos", enabled: true, equipment: "sol", level: "simple" }, 
