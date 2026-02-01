@@ -1003,7 +1003,7 @@ function playBeep(volume = 0.6) {
   beepAudio.play().catch(() => {});
 }
 
-function playBeepLong(volume = 0.7) {
+function playBeepLong(volume = 0.6) {
   if (!beepLongAudio) return;
   beepLongAudio.currentTime = 0;
   beepLongAudio.volume = volume;
@@ -1396,7 +1396,7 @@ if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) 
 
     if (remaining === 1) {
       stopAudio();          // évite overlap si un bip court jouait encore
-      playBeepLong(0.7);
+      playBeepLong(0.6);
     } else {
       playBeep(0.4);
     }
