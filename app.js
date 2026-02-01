@@ -977,10 +977,12 @@ function pickExerciseWithReplacement() {
  ************************/
 let audioCtx = null;
 
+let beepAudio = null;
+
 function initAudio() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === "suspended") {
-    audioCtx.resume().catch(() => {});
+  if (!beepAudio) {
+    beepAudio = new Audio("./beep.mp3"); // adapte le chemin si nécessaire
+    beepAudio.preload = "auto";
   }
 }
 
@@ -988,29 +990,14 @@ function initAudio() {
  * Bip court et discret.
  * On utilise un oscillateur -> pas besoin de fichiers audio.
  */
-function beep({ freq = 880, durationMs = 90, volume = 0.15 } = {}) {
-  if (!audioCtx) return;
+function beep({ volume = 0.6 } = {}) {
+  if (!beepAudio) return;
 
-  const t0 = audioCtx.currentTime;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(freq, t0);
-
-  // enveloppe rapide anti "click"
-  gain.gain.setValueAtTime(0.0001, t0);
-  gain.gain.exponentialRampToValueAtTime(volume, t0 + 0.01);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + durationMs / 1000);
-
-  osc.connect(gain).connect(audioCtx.destination);
-  osc.start(t0);
-  osc.stop(t0 + durationMs / 1000 + 0.02);
+  beepAudio.currentTime = 0;   // permet les bips rapprochés
+  beepAudio.volume = volume;
+  beepAudio.play().catch(() => {});
 }
-function vibrate(pattern = 50) {
-  if (!("vibrate" in navigator)) return;
-  navigator.vibrate(pattern);
-}
+
 
 /***********************
  * WAKE LOCK (anti-veille)
@@ -1364,8 +1351,7 @@ function tick() {
 
   // Bips dernières secondes du travail (ex: 3-2-1)
   if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) {
-    beep({ freq: 880, volume: 0.04 });
-    vibrate(40);
+    beep({ volume: 0.04 });
   }
 
   updateUI();
@@ -1504,8 +1490,8 @@ function finish() {
   timerId = null;
 
   initAudio();
-  beep({ freq: 660, volume: 0.06, durationMs: 120 });
-  setTimeout(() => beep({ freq: 990, volume: 0.06, durationMs: 120 }), 180);
+  beep({ volume: 0.06});
+  setTimeout(() => beep({ volume: 0.06,}), 180);
 
   // On garde la session "affichée", mais on met en pause
   isRunning = true;
