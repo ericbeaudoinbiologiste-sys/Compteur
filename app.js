@@ -1545,8 +1545,8 @@ function finish() {
   timerId = null;
 
   initAudio();
-  playbeep({0.08});
-  setTimeout(() => playbeep({ volume: 0.08,}), 180);
+  playbeep({0.6});
+  setTimeout(() => playbeep({ volume: 0.6,}), 180);
 
   // On garde la session "affichée", mais on met en pause
   isRunning = true;
