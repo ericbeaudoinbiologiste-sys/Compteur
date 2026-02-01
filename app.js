@@ -1378,7 +1378,6 @@ if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) 
   if (remaining === 1) {
     // Dernière seconde → beep long
     playBeepLong(0.7);
-    vibrate([30, 40, 30]); // optionnel mais efficace
   } else {
     // Bips courts
     playBeep(0.4);
