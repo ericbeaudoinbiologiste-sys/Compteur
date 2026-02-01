@@ -101,206 +101,207 @@ const DEFAULT_EXERCISES = [
   // Exercices pour la corde à sauter (à améliorer)
   // Trouvé sur https://www.thejumpropecoachchris.com/learn/wraps
   // Simple
-  { id: uid(), name: "Base", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Side straddle", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Front straddle", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Cross straddle", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Ciseaux", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Boxer", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Shuffle", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Pyramide", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Side-step", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Cloche", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Heel tap", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Toe tap", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Heel to toe", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Freestyle", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Ski", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Mummy kick", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Twister", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Wounded duck", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Kick", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Swing Kick", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Can can (Chicago)", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Running man", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Running man (reversed)", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Twister", enabled: true, equipment: "corde", level: "simple" },
-  { id: uid(), name: "Twister", enabled: true, equipment: "corde", level: "simple" },
-  //Moyen
-  { id: uid(), name: "Genoux", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Course", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Sur 1 pied", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Side-swing", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Happy feet", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "X-motion", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Entre les jambes", enabled: true, equipment: "corde", level: "moyen" },  
-  { id: uid(), name: "Grapevine(pas croisé)", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Croisé-base", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Croisé X2", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Swing-180", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Swing 180 Cross", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Dive-180", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Body stall", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Open stall", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Between the leg stall", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Backward", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Kick Back Stall", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Crossed Body Stall ", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Crossed Open Stall", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Leg Over Body Stall", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Leg Over Open Stall", enabled: true, equipment: "corde", level: "moyen" },
-  { id: uid(), name: "Double Under Stall", enabled: true, equipment: "corde", level: "moyen" },
-  
-  // Avance
-  { id: uid(), name: "360", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "360-Entre les jambes", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Switch cross", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Croisé-boxer", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Croisé-course", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Cross EB (Side swing mais un bras dans le dos)", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Cross TS (cross dans le dos)", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Cross Toad (cross passe entre les jambes et kick)", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Cross Leg Over", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Cross Inversed Toad", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Cross Inversed Leg Over", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Cross Elephant", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "EB Toad", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Double-unders", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Texan 360", enabled: true, equipment: "corde", level: "avance" },
-  { id: uid(), name: "Leg Hook 360", enabled: true, equipment: "corde", level: "avance" },
-  
-  
-  // Exercices pour le punching bag
-  { id: uid(), name: "1-2", enabled: true, equipment: "punching_bag", level: "simple" },
-  { id: uid(), name: "1-1-2", enabled: true, equipment: "punching_bag", level: "simple" },
-  { id: uid(), name: "2-3-2", enabled: true, equipment: "punching_bag", level: "simple" },
-  { id: uid(), name: "3-4", enabled: true, equipment: "punching_bag", level: "simple" },
-  { id: uid(), name: "1-2-3-4", enabled: true, equipment: "punching_bag", level: "simple" },
-  { id: uid(), name: "1-3-2-3", enabled: true, equipment: "punching_bag", level: "simple" },
-  { id: uid(), name: "2-3-6-3", enabled: true, equipment: "punching_bag", level: "simple" },
-  { id: uid(), name: "1-2-Round House", enabled: true, equipment: "punching_bag", level: "simple" }, 
-  { id: uid(), name: "1-2-Switch-Kick", enabled: true, equipment: "punching_bag", level: "simple" },
-  { id: uid(), name: "Low Kick", enabled: true, equipment: "punching_bag", level: "simple" },  
-  { id: uid(), name: "Body Kick", enabled: true, equipment: "punching_bag", level: "simple" }, 
-  { id: uid(), name: "Head Kick", enabled: true, equipment: "punching_bag", level: "simple" }, 
-  { id: uid(), name: "Roundhouse", enabled: true, equipment: "punching_bag", level: "simple" }, 
-  { id: uid(), name: "Switch Kick", enabled: true, equipment: "punching_bag", level: "simple" }, 
-  { id: uid(), name: "Lead Tead", enabled: true, equipment: "punching_bag", level: "simple" }, 
-  { id: uid(), name: "Rear Tead", enabled: true, equipment: "punching_bag", level: "simple" }, 
-  { id: uid(), name: "Shadow boxing", enabled: true, equipment: "punching_bag", level: "simple" }, 
-  // Exercises au sol
-  { id: uid(), name: "Squat", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Push-up large (pectoraux)", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Push-up serré / diamond (triceps)", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Push-up pike (épaules)", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Push-up pieds surélevés", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Push-up lent (tempo contrôlé)", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Push-up", enabled: true, equipment: "sol", level: "simple" },
-  { id: uid(), name: "Burpees", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Jumping jack", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Crunch", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Bicycle crunch", enabled: true, equipment: "sol", level: "simple" },
-  { id: uid(), name: "Crunch", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Russian crunch", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Mountain climber", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Nage ventre", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Nage dos", enabled: true, equipment: "sol", level: "simple" }, 
-  { id: uid(), name: "Planche - coude", enabled: true, equipment: "sol", level: "simple" },
-  { id: uid(), name: "Planche - main", enabled: true, equipment: "sol", level: "simple" },
-  { id: uid(), name: "Planche sur le côté", enabled: true, equipment: "sol", level: "simple" },
-  { id: uid(), name: "Superman hold", enabled: true, equipment: "sol", level: "simple" },
-  { id: uid(), name: "Fente avant", enabled: true, equipment: "sol", level: "simple" },
-  { id: uid(), name: "Fente latérale", enabled: true, equipment: "sol", level: "simple" },
-  { id: uid(), name: "Death bug", enabled: true, equipment: "sol", level: "simple" },
+  { id: "corde_base", name: "Base", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_side_straddle", name: "Side straddle", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_front_straddle", name: "Front straddle", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_cross_straddle", name: "Cross straddle", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde__ciseaux", name: "Ciseaux", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_boxer", name: "Boxer", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_shuffle", name: "Shuffle", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_pyramide", name: "Pyramide", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_side_step", name: "Side-step", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_cloche", name: "Cloche", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_heel_tap" , name: "Heel tap", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_toe_tap", name: "Toe tap", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_heel_to_toe", name: "Heel to toe", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_freestyle", name: "Freestyle", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_ski", name: "Ski", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_mummy_kick", name: "Mummy kick", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_twister", name: "Twister", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_wounded_duck", name: "Wounded duck", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_kick", name: "Kick", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_swing_kick", name: "Swing Kick", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_can_can_chicago", name: "Can can (Chicago)", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_running_man", name: "Running man", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_running_man_reversed", name: "Running man (reversed)", enabled: true, equipment: "corde", level: "simple" },
+  { id: "corde_twister", name: "Twister", enabled: true, equipment: "corde", level: "simple" },
 
-  // BJJ Solo Drill
-  { id: uid(), name: "Rock and kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Kicking up", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "180 Rock", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Rocking S Sit", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Alternating S Sit", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "The Gyro", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Rope Pull", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Backward shrimp", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "The Granby", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Backward Shoulders Rolls", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Forward Shoulders Rolls", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Explosive Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Single Leg Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Bridge & Turn", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Technical Stand-Up", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Shrimp", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Shrimp - 1 pied sur place", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Shrimp - 1 pied reculons", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Shrimp Alternate Foot", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Leg Circles", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Windshield whipper", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Shoulders walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Crab Walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "180 Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Double Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Monkey Shuffle", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Short Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Quick Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Single Side Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Knee Cut With a Follow Through", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Standing Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Long Step", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Pepper Mill", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Pepper Mill - Elbow", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Pepper Mill - Shoulder", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Beer Crawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Donkey Kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Scorpion Kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Ski Slopes", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Spiderman Pushups", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Inch Worm", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Army Crawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Step Up from Kneeling", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Standing up from Kneeling", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Double Leg Takedown", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Walrus Walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Sprawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Sprawl + Double Leg", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Sumo Step", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Single Foot Hop", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Seated Breakfall", enabled: true, equipment: "BJJ_solo", level: "simple" },
-  { id: uid(), name: "Breakfall from squat", enabled: true, equipment: "BJJ_solo", level: "simple" },
+//Moyen
+{ id: "corde_genoux", name: "Genoux", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_course", name: "Course", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_sur_1_pied", name: "Sur 1 pied", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_side_swing", name: "Side-swing", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_happy_feet", name: "Happy feet", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_x_motion", name: "X-motion", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_entre_les_jambes", name: "Entre les jambes", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_grapevine_pas_croise", name: "Grapevine(pas croisé)", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_croise_base", name: "Croisé-base", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_croise_x2", name: "Croisé X2", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_swing_180", name: "Swing-180", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_swing_180_cross", name: "Swing 180 Cross", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_dive_180", name: "Dive-180", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_body_stall", name: "Body stall", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_open_stall", name: "Open stall", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_between_the_leg_stall", name: "Between the leg stall", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_backward", name: "Backward", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_kick_back_stall", name: "Kick Back Stall", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_crossed_body_stall", name: "Crossed Body Stall", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_crossed_open_stall", name: "Crossed Open Stall", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_leg_over_body_stall", name: "Leg Over Body Stall", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_leg_over_open_stall", name: "Leg Over Open Stall", enabled: true, equipment: "corde", level: "moyen" },
+{ id: "corde_double_under_stall", name: "Double Under Stall", enabled: true, equipment: "corde", level: "moyen" },
 
-  // --- YOGA (cohérence via statesIn/statesOut) ---
-{ id: uid(), key:"yoga_tadasana", name:"Tadasana (Montagne)", enabled:true, equipment:"yoga", level:"simple",
+// Avance
+{ id: "corde_360", name: "360", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_360_entre_les_jambes", name: "360-Entre les jambes", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_switch_cross", name: "Switch cross", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_croise_boxer", name: "Croisé-boxer", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_croise_course", name: "Croisé-course", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_cross_eb_side_swing_mais_un_bras_dans_le_dos", name: "Cross EB (Side swing mais un bras dans le dos)", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_cross_ts_cross_dans_le_dos", name: "Cross TS (cross dans le dos)", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_cross_toad_cross_passe_entre_les_jambes_et_kick", name: "Cross Toad (cross passe entre les jambes et kick)", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_cross_leg_over", name: "Cross Leg Over", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_cross_inversed_toad", name: "Cross Inversed Toad", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_cross_inversed_leg_over", name: "Cross Inversed Leg Over", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_cross_elephant", name: "Cross Elephant", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_eb_toad", name: "EB Toad", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_double_unders", name: "Double-unders", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_texan_360", name: "Texan 360", enabled: true, equipment: "corde", level: "avance" },
+{ id: "corde_leg_hook_360", name: "Leg Hook 360", enabled: true, equipment: "corde", level: "avance" },
+
+// Exercices pour le punching bag
+{ id: "punching_bag_1_2", name: "1-2", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_1_1_2", name: "1-1-2", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_2_3_2", name: "2-3-2", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_3_4", name: "3-4", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_1_2_3_4", name: "1-2-3-4", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_1_3_2_3", name: "1-3-2-3", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_2_3_6_3", name: "2-3-6-3", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_1_2_round_house", name: "1-2-Round House", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_1_2_switch_kick", name: "1-2-Switch-Kick", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_low_kick", name: "Low Kick", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_body_kick", name: "Body Kick", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_head_kick", name: "Head Kick", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_roundhouse", name: "Roundhouse", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_switch_kick", name: "Switch Kick", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_lead_tead", name: "Lead Tead", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_rear_tead", name: "Rear Tead", enabled: true, equipment: "punching_bag", level: "simple" },
+{ id: "punching_bag_shadow_boxing", name: "Shadow boxing", enabled: true, equipment: "punching_bag", level: "simple" },
+
+// Exercises au sol
+{ id: "sol_squat", name: "Squat", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_push_up_large_pectoraux", name: "Push-up large (pectoraux)", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_push_up_serre_diamond_triceps", name: "Push-up serré / diamond (triceps)", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_push_up_pike_epaules", name: "Push-up pike (épaules)", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_push_up_pieds_sureleves", name: "Push-up pieds surélevés", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_push_up_lent_tempo_controle", name: "Push-up lent (tempo contrôlé)", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_push_up", name: "Push-up", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_burpees", name: "Burpees", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_jumping_jack", name: "Jumping jack", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_crunch", name: "Crunch", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_bicycle_crunch", name: "Bicycle crunch", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_russian_crunch", name: "Russian crunch", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_mountain_climber", name: "Mountain climber", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_nage_ventre", name: "Nage ventre", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_nage_dos", name: "Nage dos", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_planche_coude", name: "Planche - coude", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_planche_main", name: "Planche - main", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_planche_sur_le_cote", name: "Planche sur le côté", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_superman_hold", name: "Superman hold", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_fente_avant", name: "Fente avant", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_fente_laterale", name: "Fente latérale", enabled: true, equipment: "sol", level: "simple" },
+{ id: "sol_death_bug", name: "Death bug", enabled: true, equipment: "sol", level: "simple" },
+
+// BJJ Solo Drill
+{ id: "bjj_solo_rock_and_kick", name: "Rock and kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_kicking_up", name: "Kicking up", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_180_rock", name: "180 Rock", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_rocking_s_sit", name: "Rocking S Sit", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_alternating_s_sit", name: "Alternating S Sit", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_the_gyro", name: "The Gyro", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_rope_pull", name: "Rope Pull", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_backward_shrimp", name: "Backward shrimp", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_the_granby", name: "The Granby", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_backward_shoulders_rolls", name: "Backward Shoulders Rolls", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_forward_shoulders_rolls", name: "Forward Shoulders Rolls", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_bridge", name: "Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_explosive_bridge", name: "Explosive Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_single_leg_bridge", name: "Single Leg Bridge", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_bridge_and_turn", name: "Bridge & Turn", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_technical_stand_up", name: "Technical Stand-Up", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_shrimp", name: "Shrimp", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_shrimp_1_pied_sur_place", name: "Shrimp - 1 pied sur place", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_shrimp_1_pied_reculons", name: "Shrimp - 1 pied reculons", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_shrimp_alternate_foot", name: "Shrimp Alternate Foot", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_leg_circles", name: "Leg Circles", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_windshield_whipper", name: "Windshield whipper", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_shoulders_walk", name: "Shoulders walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_crab_walk", name: "Crab Walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_triangle", name: "Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_180_triangle", name: "180 Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_double_triangle", name: "Double Triangle", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_monkey_shuffle", name: "Monkey Shuffle", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_short_knee_cut", name: "Short Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_knee_cut", name: "Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_quick_knee_cut", name: "Quick Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_single_side_knee_cut", name: "Single Side Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_knee_cut_with_a_follow_through", name: "Knee Cut With a Follow Through", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_standing_knee_cut", name: "Standing Knee Cut", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_long_step", name: "Long Step", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_pepper_mill", name: "Pepper Mill", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_pepper_mill_elbow", name: "Pepper Mill - Elbow", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_pepper_mill_shoulder", name: "Pepper Mill - Shoulder", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_beer_crawl", name: "Beer Crawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_donkey_kick", name: "Donkey Kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_scorpion_kick", name: "Scorpion Kick", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_ski_slopes", name: "Ski Slopes", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_spiderman_pushups", name: "Spiderman Pushups", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_inch_worm", name: "Inch Worm", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_army_crawl", name: "Army Crawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_step_up_from_kneeling", name: "Step Up from Kneeling", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_standing_up_from_kneeling", name: "Standing up from Kneeling", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_double_leg_takedown", name: "Double Leg Takedown", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_walrus_walk", name: "Walrus Walk", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_sprawl", name: "Sprawl", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_sprawl_double_leg", name: "Sprawl + Double Leg", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_sumo_step", name: "Sumo Step", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_single_foot_hop", name: "Single Foot Hop", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_seated_breakfall", name: "Seated Breakfall", enabled: true, equipment: "BJJ_solo", level: "simple" },
+{ id: "bjj_solo_breakfall_from_squat", name: "Breakfall from squat", enabled: true, equipment: "BJJ_solo", level: "simple" },
+
+// --- YOGA (cohérence via statesIn/statesOut) ---
+// (tu m’as demandé equipment + exercice en id; j’ai respecté)
+{ id: "yoga_tadasana_montagne", key:"yoga_tadasana", name:"Tadasana (Montagne)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["standing"], statesOut:["standing","forward_fold","chair_or_squat","balance_standing"], weight:5, intensity:1, tags:["warmup"]
 },
-{ id: uid(), key:"yoga_urdhva_hastasana", name:"Urdhva Hastasana (Bras levés)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_urdhva_hastasana_bras_leves", key:"yoga_urdhva_hastasana", name:"Urdhva Hastasana (Bras levés)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["standing"], statesOut:["standing","forward_fold"], weight:4, intensity:1, tags:["warmup"]
 },
-{ id: uid(), key:"yoga_uttanasana", name:"Uttanasana (Pli avant)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_uttanasana_pli_avant", key:"yoga_uttanasana", name:"Uttanasana (Pli avant)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["standing","forward_fold"], statesOut:["forward_fold","lunge","down_dog","standing"], weight:5, intensity:2, tags:["hamstrings"]
 },
-{ id: uid(), key:"yoga_ardha_uttanasana", name:"Ardha Uttanasana (Demi-pli avant)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_ardha_uttanasana_demi_pli_avant", key:"yoga_ardha_uttanasana", name:"Ardha Uttanasana (Demi-pli avant)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["forward_fold"], statesOut:["forward_fold","lunge"], weight:4, intensity:2, tags:["spine"]
 },
-{ id: uid(), key:"yoga_child_pose", name:"Balasana (Enfant)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_balasana_enfant", key:"yoga_child_pose", name:"Balasana (Enfant)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["kneeling","tabletop"], statesOut:["kneeling","tabletop","down_dog","floor_seated"], weight:4, intensity:1, tags:["rest"]
 },
-{ id: uid(), key:"yoga_down_dog", name:"Adho Mukha Svanasana (Chien tête en bas)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_adho_mukha_svanasana_chien_tete_en_bas", key:"yoga_down_dog", name:"Adho Mukha Svanasana (Chien tête en bas)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["down_dog","tabletop","plank_family","lunge"], statesOut:["down_dog","lunge","plank_family","forward_fold"], weight:5, intensity:2, tags:["flow"]
 },
-{ id: uid(), key:"yoga_plank", name:"Phalakasana (Planche)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_phalakasana_planche", key:"yoga_plank", name:"Phalakasana (Planche)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["plank_family","down_dog"], statesOut:["plank_family","up_dog_family","floor_prone","down_dog"], weight:3, intensity:4, tags:["core"]
 },
-{ id: uid(), key:"yoga_cobra", name:"Bhujangasana (Cobra)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_bhujangasana_cobra", key:"yoga_cobra", name:"Bhujangasana (Cobra)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["floor_prone","up_dog_family","plank_family"], statesOut:["floor_prone","up_dog_family","down_dog"], weight:3, intensity:2, tags:["backbend"]
 },
-{ id: uid(), key:"yoga_staff", name:"Dandasana (Bâton assis)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_dandasana_baton_assis", key:"yoga_staff", name:"Dandasana (Bâton assis)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["floor_seated"], statesOut:["floor_seated","twist","forward_fold","floor_supine"], weight:3, intensity:1, tags:["seated"]
 },
-{ id: uid(), key:"yoga_savasana", name:"Savasana (Relaxation)", enabled:true, equipment:"yoga", level:"simple",
+{ id: "yoga_savasana_relaxation", key:"yoga_savasana", name:"Savasana (Relaxation)", enabled:true, equipment:"yoga", level:"simple",
   statesIn:["floor_supine"], statesOut:["floor_supine"], weight:1, intensity:1, tags:["cooldown"]
 },
+
 
 
 ];
@@ -1259,6 +1260,47 @@ function normalizeExercises(arr) {
     }))
     .filter(e => e.name.length > 0);
 }
+function mergeDefaultExercises(savedList) {
+  const saved = Array.isArray(savedList) ? savedList : [];
+
+  // Index des exercices sauvegardés (par id stable)
+  const savedById = new Map(saved.map(e => [String(e.id), e]));
+
+  // Set des ids du code (defaults)
+  const defaultIds = new Set(DEFAULT_EXERCISES.map(d => String(d.id)));
+
+  // 1) Base: defaults, mais on conserve les préférences user si existantes.
+  //    Si l'exercice est nouveau (pas dans saved), on le met enabled:false.
+  const merged = DEFAULT_EXERCISES.map(def => {
+    const id = String(def.id);
+    const s = savedById.get(id);
+
+    if (!s) {
+      // Exercice nouvellement ajouté dans le code
+      return {
+        ...def,
+        enabled: false,                      // <- IMPORTANT: pas coché par défaut
+        repeatThisExercise: false            // <- optionnel: safe default
+      };
+    }
+
+    // Exercice déjà connu: garder les choix utilisateur
+    return {
+      ...def,                               // prend les nouveautés du code (ex: tags, statesIn/out)
+      enabled: !!s.enabled,
+      repeatThisExercise: !!s.repeatThisExercise
+    };
+  });
+
+  // 2) Ajouter les exercices custom user (ceux qui n'existent pas dans defaults)
+  for (const e of saved) {
+    const id = String(e.id);
+    if (!defaultIds.has(id)) merged.push(e);
+  }
+
+  return merged;
+}
+
 
 
 function loadSettings() {
@@ -1301,7 +1343,8 @@ function loadSettings() {
       rounds: clampInt(obj.rounds ?? DEFAULTS.rounds, 1, 200),
       beepLast: clampInt(obj.beepLast ?? DEFAULTS.beepLast, 0, 10),
 
-      exercises: normalizeExercises(obj.exercises),
+      exercises: mergeDefaultExercises(normalizeExercises(obj.exercises)),
+
 
       sessionEquipment,
       modifiers,
