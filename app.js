@@ -379,6 +379,7 @@ let currentModifier = null; // { id, label, style }
 let nextModifier = null;    // idem
 
 let beepLast = DEFAULTS.beepLast;
+let lastBeepSecond = null;
 
 let editingPresetId = null;
 
@@ -986,11 +987,13 @@ function initAudio() {
   if (!beepAudio) {
     beepAudio = new Audio("./beep.mp3");
     beepAudio.preload = "auto";
+    beepAudio.loop = false;
   }
 
   if (!beepLongAudio) {
     beepLongAudio = new Audio("./beep_long.mp3");
     beepLongAudio.preload = "auto";
+    beepLongAudio.loop = false; 
   }
 }
 function playBeep(volume = 0.6) {
@@ -1006,7 +1009,16 @@ function playBeepLong(volume = 0.7) {
   beepLongAudio.volume = volume;
   beepLongAudio.play().catch(() => {});
 }
-
+function stopAudio() {
+  if (beepAudio) {
+    beepAudio.pause();
+    beepAudio.currentTime = 0;
+  }
+  if (beepLongAudio) {
+    beepLongAudio.pause();
+    beepLongAudio.currentTime = 0;
+  }
+}
 
 
 /**
@@ -1324,6 +1336,7 @@ function stopSession() {
   roundIndex = 0;
   currentExercise = "—";
 
+  stopAudio();
   releaseWakeLock();
 
   setButtons({ running: false, paused: false });
@@ -1341,6 +1354,7 @@ function togglePause() {
   if (isPaused) {
     clearInterval(timerId);
     timerId = null;
+    stopAudio();
     releaseWakeLock();
   } else {
     initAudio();
@@ -1373,16 +1387,25 @@ function tick() {
   if (!isRunning || isPaused) return;
 
   // Bips dernières secondes du travail (ex: 3-2-1)
+// Bips dernières secondes du travail (ex: 3-2-1)
 if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) {
 
-  if (remaining === 1) {
-    // Dernière seconde → beep long
-    playBeepLong(0.7);
-  } else {
-    // Bips courts
-    playBeep(0.4);
+  // Anti-boucle: si on est déjà passé par cette seconde, on ne rejoue pas.
+  if (lastBeepSecond !== remaining) {
+    lastBeepSecond = remaining;
+
+    if (remaining === 1) {
+      stopAudio();          // évite overlap si un bip court jouait encore
+      playBeepLong(0.7);
+    } else {
+      playBeep(0.4);
+    }
   }
+} else {
+  // Quand on sort de la fenêtre des bips, on reset l'anti-boucle
+  lastBeepSecond = null;
 }
+
 
 
   updateUI();
@@ -1405,8 +1428,9 @@ if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) 
  */
 function transitionNext() {
   const s = loadSettings(); // settings verrouillés au start
-
-const pickPair = () => pickWorkStepWithRepeat(s);
+  const pickPair = () => pickWorkStepWithRepeat(s);
+  lastBeepSecond = null;
+  stopAudio();
 
 
   // === PREP -> WORK ===
@@ -1521,8 +1545,8 @@ function finish() {
   timerId = null;
 
   initAudio();
-  beep({ volume: 0.08});
-  setTimeout(() => beep({ volume: 0.08,}), 180);
+  playbeep({0.08});
+  setTimeout(() => playbeep({ volume: 0.08,}), 180);
 
   // On garde la session "affichée", mais on met en pause
   isRunning = true;
