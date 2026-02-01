@@ -12,9 +12,83 @@
  * 6) Sauvegarde des réglages + exercices dans localStorage
  *
  ************************************************************/
+/************************************************************
+ * TABLE DES MATIÈRES
+ *
+ *  0) En-tête & objectifs
+ *
+ *  1) CONFIG / CONSTANTES
+ *     1.1 uid() + DEFAULT_EXERCISES
+ *     1.2 DEFAULTS + clés localStorage (LS_KEY, PRESETS_KEY)
+ *
+ *  2) PRESETS (modèles) — localStorage
+ *     2.1 loadPresetStore() / savePresetStore()
+ *     2.2 CRUD: getPresetById(), upsertPreset(), setLastPreset()
+ *     2.3 ensureDefaultPresetIfEmpty() + rendu liste
+ *
+ *  3) RÉFÉRENCES UI (DOM)
+ *     3.1 objet el (tous les éléments HTML)
+ *
+ *  4) ÉTAT RUNTIME (session)
+ *     4.1 timers & flags (timerId, isRunning, isPaused)
+ *     4.2 état minuteur (phase, remaining, roundsTotal, roundIndex)
+ *     4.3 état exercice/modificateur (currentExercise, nextExercise, modifiers)
+ *     4.4 état répétition (pendingRepeat)
+ *
+ *  5) UTILITAIRES GÉNÉRAUX
+ *     5.1 clampInt(), fmtTime(), phaseLabelFr()
+ *
+ *  6) MODIFICATEURS (pondération)
+ *     6.1 normalizeWeights(), pickWeighted()
+ *     6.2 defaultModifiersForEquipment(), getModifiersFromUI()
+ *     6.3 pickModifierForSettings(), isNormalModifier()
+ *
+ *  7) RÉPÉTITION G/D (exercices)
+ *     7.1 shouldRepeatExercise(), sideLabel(), formatExerciseName()
+ *     7.2 pickWorkStepWithRepeat()
+ *
+ *  8) UI HELPERS (navigation)
+ *     8.1 showPresets(), showSettings(), showTimer()
+ *     8.2 setPhaseClass(), setButtons(), updateUI()
+ *
+ *  9) CHECKLIST EXERCICES (réglages)
+ *     9.1 labels (equipmentLabel, levelLabel)
+ *     9.2 filtres (getFilteredExercises, applyEquipmentUI)
+ *     9.3 états (setAllExercisesEnabled, enableOnlyEquipment)
+ *     9.4 rendu (renderExerciseChecklist)
+ *     9.5 sélection (enabledExercises, pickExerciseWithReplacement)
+ *
+ * 10) AUDIO (MP3)
+ *     10.1 initAudio(), stopAudio()
+ *     10.2 playBeep(), playBeepLong()
+ *
+ * 11) WAKE LOCK (anti-veille)
+ *     11.1 requestWakeLock(), releaseWakeLock()
+ *     11.2 visibilitychange handler
+ *
+ * 12) SETTINGS (localStorage)
+ *     12.1 normalizeExercises()
+ *     12.2 loadSettings(), saveSettings()
+ *     12.3 settingsFromUI(), settingsToUI()
+ *
+ * 13) LOGIQUE MINUTEUR (moteur)
+ *     13.1 startSession(), stopSession(), togglePause(), skipPhase()
+ *     13.2 tick() + bips fin de phase work
+ *     13.3 transitionNext() (prep/work/rest/cooldown/done)
+ *     13.4 finish()
+ *
+ * 14) SERVICE WORKER (MAJ auto)
+ *     14.1 registerSWAndAutoReload()
+ *
+ * 15) INIT / EVENTS
+ *     15.1 init() (chargement settings, presets, UI initiale)
+ *     15.2 listeners: presets, réglages, checklist, filtres, chrono
+ *
+ ************************************************************/
+
 
 /***********************
- * CONFIG / CONSTANTES
+ * 1) CONFIG / CONSTANTES
  ************************/
 
 // Liste d'exercices par défaut (avec "enabled" pour la checklist)
@@ -196,6 +270,39 @@ const DEFAULT_EXERCISES = [
   { id: uid(), name: "Seated Breakfall", enabled: true, equipment: "BJJ_solo", level: "simple" },
   { id: uid(), name: "Breakfall from squat", enabled: true, equipment: "BJJ_solo", level: "simple" },
 
+  // --- YOGA (cohérence via statesIn/statesOut) ---
+{ id: uid(), key:"yoga_tadasana", name:"Tadasana (Montagne)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["standing"], statesOut:["standing","forward_fold","chair_or_squat","balance_standing"], weight:5, intensity:1, tags:["warmup"]
+},
+{ id: uid(), key:"yoga_urdhva_hastasana", name:"Urdhva Hastasana (Bras levés)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["standing"], statesOut:["standing","forward_fold"], weight:4, intensity:1, tags:["warmup"]
+},
+{ id: uid(), key:"yoga_uttanasana", name:"Uttanasana (Pli avant)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["standing","forward_fold"], statesOut:["forward_fold","lunge","down_dog","standing"], weight:5, intensity:2, tags:["hamstrings"]
+},
+{ id: uid(), key:"yoga_ardha_uttanasana", name:"Ardha Uttanasana (Demi-pli avant)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["forward_fold"], statesOut:["forward_fold","lunge"], weight:4, intensity:2, tags:["spine"]
+},
+{ id: uid(), key:"yoga_child_pose", name:"Balasana (Enfant)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["kneeling","tabletop"], statesOut:["kneeling","tabletop","down_dog","floor_seated"], weight:4, intensity:1, tags:["rest"]
+},
+{ id: uid(), key:"yoga_down_dog", name:"Adho Mukha Svanasana (Chien tête en bas)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["down_dog","tabletop","plank_family","lunge"], statesOut:["down_dog","lunge","plank_family","forward_fold"], weight:5, intensity:2, tags:["flow"]
+},
+{ id: uid(), key:"yoga_plank", name:"Phalakasana (Planche)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["plank_family","down_dog"], statesOut:["plank_family","up_dog_family","floor_prone","down_dog"], weight:3, intensity:4, tags:["core"]
+},
+{ id: uid(), key:"yoga_cobra", name:"Bhujangasana (Cobra)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["floor_prone","up_dog_family","plank_family"], statesOut:["floor_prone","up_dog_family","down_dog"], weight:3, intensity:2, tags:["backbend"]
+},
+{ id: uid(), key:"yoga_staff", name:"Dandasana (Bâton assis)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["floor_seated"], statesOut:["floor_seated","twist","forward_fold","floor_supine"], weight:3, intensity:1, tags:["seated"]
+},
+{ id: uid(), key:"yoga_savasana", name:"Savasana (Relaxation)", enabled:true, equipment:"yoga", level:"simple",
+  statesIn:["floor_supine"], statesOut:["floor_supine"], weight:1, intensity:1, tags:["cooldown"]
+},
+
+
 ];
 
 
@@ -222,7 +329,7 @@ const DEFAULTS = {
 const LS_KEY = "interval_timer_settings_v3";
 
 /***********************
- * PRESETS (modèles) — localStorage
+ * 2) PRESETS (modèles) — localStorage
  ************************/
 
 const PRESETS_KEY = "interval_timer_presets_v1";
@@ -294,7 +401,7 @@ function ensureDefaultPresetIfEmpty() {
 
 
 /***********************
- * RÉFÉRENCES UI (DOM)
+ *  3) RÉFÉRENCES UI (DOM)
  ************************/
 const el = {
   // Vues
@@ -364,7 +471,7 @@ modifierPill: document.getElementById("modifierPill"),
 };
 
 /***********************
- * ÉTAT RUNTIME (session)
+*  4) ÉTAT RUNTIME (session)
  ************************/
 let timerId = null;       // setInterval id
 let isRunning = false;    // session en cours (même si "done" on garde true pour afficher)
@@ -377,6 +484,8 @@ let roundIndex = 0;       // index de l'intervalle de travail actuel (1..roundsT
 let currentExercise = "—";// exercice affiché en phase "work"
 let currentModifier = null; // { id, label, style }
 let nextModifier = null;    // idem
+let yogaState = "standing"; // état courant pour transitions yoga
+
 
 let beepLast = DEFAULTS.beepLast;
 let lastBeepSecond = null;
@@ -390,7 +499,7 @@ let nextExercise = "—";
 
 
 /***********************
- * UTILITAIRES
+ *  5) UTILITAIRES GÉNÉRAUX
  ************************/
 
 function clampInt(v, min, max) {
@@ -416,7 +525,11 @@ function phaseLabelFr(p) {
     default: return "—";
   }
 }
-// Modificateurs
+
+/***********************
+ *  6) MODIFICATEURS (pondération)
+ ************************/
+
 function normalizeWeights(items) {
   const list = items.map(x => ({ ...x, weight: Math.max(0, Number(x.weight) || 0) }));
   const total = list.reduce((a,x) => a + x.weight, 0);
@@ -437,6 +550,47 @@ function pickWeighted(items) {
   }
   return list[list.length - 1] || null;
 }
+function pickWeightedExercise(list) {
+  const items = list
+    .map(e => ({ ex: e, w: Math.max(0, Number(e.weight) || 0) }))
+    .filter(x => x.w > 0);
+
+  if (!items.length) {
+    // fallback random uniforme si aucun weight
+    return list[Math.floor(Math.random() * list.length)] || null;
+  }
+
+  const total = items.reduce((a,x) => a + x.w, 0);
+  let r = Math.random() * total;
+  for (const it of items) {
+    r -= it.w;
+    if (r <= 0) return it.ex;
+  }
+  return items[items.length - 1].ex;
+}
+
+function randomPick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)] || null;
+}
+
+function pickYogaExercise() {
+  const enabled = enabledExercises().filter(e => e.equipment === "yoga");
+  if (!enabled.length) return null;
+
+  // candidats compatibles
+  const candidates = enabled.filter(e => Array.isArray(e.statesIn) && e.statesIn.includes(yogaState));
+
+  const chosen = candidates.length ? pickWeightedExercise(candidates) : pickWeightedExercise(enabled);
+  if (!chosen) return null;
+
+  // avancer l’état yoga (choisir une sortie au hasard)
+  if (Array.isArray(chosen.statesOut) && chosen.statesOut.length) {
+    yogaState = randomPick(chosen.statesOut) || yogaState;
+  }
+
+  return chosen;
+}
+
 
 function defaultModifiersForEquipment(eq) {
   if (eq === "corde") {
@@ -490,7 +644,9 @@ function pickModifierForSettings(s) {
   return pickWeighted(mods);
 }
 
-// Pour répétition gauche-droite
+/***********************
+ *  7) RÉPÉTITION G/D (exercices)
+ ************************/
 function shouldRepeatExercise(ex, settings) {
   if (!settings.repeatModeEnabled) return false;
   if (settings.repeatScope === "all") return true;
@@ -548,7 +704,7 @@ function pickWorkStepWithRepeat(s) {
 
 
 /***********************
- * UI HELPERS
+ *  8) UI HELPERS (navigation)
  ************************/
 
 function showPresets() {
@@ -764,7 +920,7 @@ function usePreset(presetId) {
 
 
 /***********************
- * CHECKLIST EXERCICES
+ *  9) CHECKLIST EXERCICES (réglages)
  ************************/
 
 /**
@@ -779,6 +935,7 @@ function equipmentLabel(v) {
   if (v === "sol") return "Exercices au sol";
   if (v === "BJJ_solo") return "Drill solo BJJ";
   if (v === "aucun") return "Sans équipement";
+  if (v === "yoga") return "Yoga";
   return v;
 }
 
@@ -882,7 +1039,7 @@ function renderExerciseChecklist() {
   }
 
   // Ordre souhaité (optionnel)
-  const equipmentOrder = ["aucun", "corde", "punching_bag", "sol", "BJJ_solo"];
+  const equipmentOrder = ["aucun", "corde", "punching_bag", "sol", "BJJ_solo", "yoga"];
   const levelOrder = ["simple", "moyen", "avance"];
 
   const equipments = [...groups.keys()].sort(
@@ -966,18 +1123,24 @@ function enabledExercises() {
  * -> Chaque intervalle de travail peut répéter un exercice.
  */
 function pickExerciseWithReplacement() {
+  const eq = el.sessionEquipment ? el.sessionEquipment.value : "none";
   const list = enabledExercises();
   if (!list.length) return null;
+
+  // Yoga: tirage compatible + pondéré
+  if (eq === "yoga") {
+    return pickYogaExercise();
+  }
+
+  // Autres équipements: inchangé
   const idx = Math.floor(Math.random() * list.length);
   return list[idx];
 }
 
 
+
 /***********************
- * AUDIO (Web Audio)
- ************************/
-/***********************
- * AUDIO (MP3)
+ * 10) AUDIO (MP3)
  ************************/
 
 let beepAudio = null;
@@ -1035,7 +1198,7 @@ function beep({ volume = 0.6 } = {}) {
 
 
 /***********************
- * WAKE LOCK (anti-veille)
+ * 11) WAKE LOCK (anti-veille)
  ************************/
 let wakeLock = null;
 
@@ -1066,12 +1229,10 @@ document.addEventListener("visibilitychange", async () => {
 });
 
 /***********************
- * SETTINGS (localStorage)
+ * 12) SETTINGS (localStorage)
  ************************/
 
 function normalizeExercises(arr) {
-  // Conserve (name, enabled, equipment, level, repeatThisExercise)
-  // et protège contre des données invalides
   if (!Array.isArray(arr) || arr.length === 0) {
     return DEFAULT_EXERCISES.map(x => ({
       ...x,
@@ -1082,16 +1243,23 @@ function normalizeExercises(arr) {
   return arr
     .map(e => ({
       id: String(e.id ?? uid()),
+      key: e.key ? String(e.key) : undefined,              // <- NEW (optionnel mais utile)
       name: String(e.name ?? "").trim(),
       enabled: !!e.enabled,
       equipment: String(e.equipment ?? "aucun"),
       level: String(e.level ?? "simple"),
+      repeatThisExercise: !!e.repeatThisExercise,
 
-      // Nouveau: répétition par exercice (persistée)
-      repeatThisExercise: !!e.repeatThisExercise
+      // --- NEW: yoga metadata (optionnels) ---
+      statesIn: Array.isArray(e.statesIn) ? e.statesIn.map(String) : undefined,
+      statesOut: Array.isArray(e.statesOut) ? e.statesOut.map(String) : undefined,
+      weight: (e.weight == null ? undefined : Number(e.weight)),
+      intensity: (e.intensity == null ? undefined : Number(e.intensity)),
+      tags: Array.isArray(e.tags) ? e.tags.map(String) : undefined
     }))
     .filter(e => e.name.length > 0);
 }
+
 
 function loadSettings() {
   try {
@@ -1259,7 +1427,7 @@ applyEquipmentUI({ resetChecks: false });
 
 
 /***********************
- * LOGIQUE MÉTIER (MINUTEUR)
+ * 13) LOGIQUE MINUTEUR (moteur)
  ************************/
 
 /**
@@ -1281,6 +1449,8 @@ function startSession() {
   isPaused = false;
 
   pendingRepeat = null;
+  yogaState = "standing";
+
 
   // Déclenché suite au clic -> OK pour mobile
   initAudio();
@@ -1559,6 +1729,10 @@ function finish() {
   setButtons({ running: true, paused: true });
 }
 
+/***********************
+* 14) SERVICE WORKER (MAJ auto)
+ ************************/
+
 function registerSWAndAutoReload() {
   if (!("serviceWorker" in navigator)) return;
 
@@ -1575,7 +1749,7 @@ function registerSWAndAutoReload() {
 registerSWAndAutoReload();
 
 /***********************
- * INIT / EVENTS
+ * 15) INIT / EVENTS
  ************************/
 
 function init() {
