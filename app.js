@@ -1504,7 +1504,9 @@ function transitionNext() {
 
   // === REST -> WORK / COOLDOWN / DONE ===
   if (phase === "rest") {
-    // Après repos: on a forcément un prochain work (puisqu'on ne fait pas de repos après le dernier)
+      initAudio();
+    stopAudio();
+    playBeep(0.6);
     phase = "work";
     roundIndex += 1;
 
