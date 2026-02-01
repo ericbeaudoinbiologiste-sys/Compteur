@@ -975,16 +975,39 @@ function pickExerciseWithReplacement() {
 /***********************
  * AUDIO (Web Audio)
  ************************/
-let audioCtx = null;
+/***********************
+ * AUDIO (MP3)
+ ************************/
 
 let beepAudio = null;
+let beepLongAudio = null;
 
 function initAudio() {
   if (!beepAudio) {
-    beepAudio = new Audio("./beep.mp3"); // adapte le chemin si nécessaire
+    beepAudio = new Audio("./beep.mp3");
     beepAudio.preload = "auto";
   }
+
+  if (!beepLongAudio) {
+    beepLongAudio = new Audio("./beep_long.mp3");
+    beepLongAudio.preload = "auto";
+  }
 }
+function playBeep(volume = 0.6) {
+  if (!beepAudio) return;
+  beepAudio.currentTime = 0;
+  beepAudio.volume = volume;
+  beepAudio.play().catch(() => {});
+}
+
+function playBeepLong(volume = 0.7) {
+  if (!beepLongAudio) return;
+  beepLongAudio.currentTime = 0;
+  beepLongAudio.volume = volume;
+  beepLongAudio.play().catch(() => {});
+}
+
+
 
 /**
  * Bip court et discret.
@@ -1350,9 +1373,18 @@ function tick() {
   if (!isRunning || isPaused) return;
 
   // Bips dernières secondes du travail (ex: 3-2-1)
-  if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) {
-    beep({ volume: 0.04 });
+if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) {
+
+  if (remaining === 1) {
+    // Dernière seconde → beep long
+    playBeepLong(0.7);
+    vibrate([30, 40, 30]); // optionnel mais efficace
+  } else {
+    // Bips courts
+    playBeep(0.4);
   }
+}
+
 
   updateUI();
 
@@ -1490,8 +1522,8 @@ function finish() {
   timerId = null;
 
   initAudio();
-  beep({ volume: 0.06});
-  setTimeout(() => beep({ volume: 0.06,}), 180);
+  beep({ volume: 0.08});
+  setTimeout(() => beep({ volume: 0.08,}), 180);
 
   // On garde la session "affichée", mais on met en pause
   isRunning = true;
