@@ -1544,18 +1544,19 @@ function finish() {
   clearInterval(timerId);
   timerId = null;
 
-initAudio();
-playBeep(0.6);
-setTimeout(() => playBeep(0.6), 180);
+  initAudio();
+  playBeep(0.6);
+  setTimeout(() => playBeep(0.6), 180);
 
-  // On garde la session "affichée", mais on met en pause
   isRunning = true;
   isPaused = true;
 
+  stopAudio();
   releaseWakeLock();
 
   setButtons({ running: true, paused: true });
 }
+
 function registerSWAndAutoReload() {
   if (!("serviceWorker" in navigator)) return;
 
