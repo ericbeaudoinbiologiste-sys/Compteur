@@ -1544,9 +1544,9 @@ function finish() {
   clearInterval(timerId);
   timerId = null;
 
-  initAudio();
-  playBeep({0.6});
-  setTimeout(() => playBeep({0.6,})); //J'ai enelevé le 180 à la fin de la parenthese
+initAudio();
+playBeep(0.6);
+setTimeout(() => playBeep(0.6), 180);
 
   // On garde la session "affichée", mais on met en pause
   isRunning = true;
