@@ -1157,11 +1157,34 @@ function initAudio() {
   if (!beepLongAudio) {
     beepLongAudio = new Audio("./beep_long.mp3");
     beepLongAudio.preload = "auto";
+    beepLongAudio.loop = false;
+
+    // Reset à la fin du long beep
+    beepLongAudio.addEventListener("ended", () => {
+      beepLongAudio.currentTime = 0;
+      // optionnel: remettre un volume "par défaut"
+      beepLongAudio.volume = 1.0;
+    });
+  }
+}
+
+
+  if (!beepLongAudio) {
+    beepLongAudio = new Audio("./beep_long.mp3");
+    beepLongAudio.preload = "auto";
     beepLongAudio.loop = false; 
   }
 }
 function playBeep(volume = 0.6) {
   if (!beepAudio) return;
+
+  // Empêche le chevauchement
+  if (beepLongAudio) {
+    beepLongAudio.pause();
+    beepLongAudio.currentTime = 0;
+  }
+
+  beepAudio.pause();            // (au cas où)
   beepAudio.currentTime = 0;
   beepAudio.volume = volume;
   beepAudio.play().catch(() => {});
@@ -1169,10 +1192,19 @@ function playBeep(volume = 0.6) {
 
 function playBeepLong(volume = 0.6) {
   if (!beepLongAudio) return;
+
+  // Empêche le chevauchement
+  if (beepAudio) {
+    beepAudio.pause();
+    beepAudio.currentTime = 0;
+  }
+
+  beepLongAudio.pause();        // (au cas où)
   beepLongAudio.currentTime = 0;
   beepLongAudio.volume = volume;
   beepLongAudio.play().catch(() => {});
 }
+
 function stopAudio() {
   if (beepAudio) {
     beepAudio.pause();
@@ -1717,7 +1749,7 @@ function transitionNext() {
 
   // === REST -> WORK / COOLDOWN / DONE ===
   if (phase === "rest") {
-      initAudio();
+    initAudio();
     stopAudio();
     playBeep(0.6);
     phase = "work";
