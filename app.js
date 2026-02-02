@@ -1175,7 +1175,7 @@ function initAudio() {
     beepLongAudio.loop = false; 
   }
 }
-function playBeep(volume = 0.6) {
+function playBeep(volume = 1) {
   if (!beepAudio) return;
 
   // Empêche le chevauchement
@@ -1190,7 +1190,7 @@ function playBeep(volume = 0.6) {
   beepAudio.play().catch(() => {});
 }
 
-function playBeepLong(volume = 0.6) {
+function playBeepLong(volume = 1) {
   if (!beepLongAudio) return;
 
   // Empêche le chevauchement
@@ -1221,7 +1221,7 @@ function stopAudio() {
  * Bip court et discret.
  * On utilise un oscillateur -> pas besoin de fichiers audio.
  */
-function beep({ volume = 0.6 } = {}) {
+function beep({ volume = 1 } = {}) {
   if (!beepAudio) return;
 
   beepAudio.currentTime = 0;   // permet les bips rapprochés
