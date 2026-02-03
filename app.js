@@ -1,16 +1,6 @@
 /************************************************************
  * app.js — Minuteur d'entraînement (PWA) — Version complète
  *
- * Fonctionnalités:
- * 1) Réglages: Préparation / Travail / Repos / Cooldown / #Intervalles / Bips
- * 2) "Deux pages" (2 vues dans le même index.html):
- *    - Réglages + checklist des exercices
- *    - Chrono
- * 3) Travail: affiche un exercice aléatoire AVEC remise, tiré dans la liste cochée
- * 4) Bips dans les dernières secondes du Travail (Web Audio)
- * 5) Empêche la veille (Screen Wake Lock) si supporté
- * 6) Sauvegarde des réglages + exercices dans localStorage
- *
  ************************************************************/
 /************************************************************
  * TABLE DES MATIÈRES
