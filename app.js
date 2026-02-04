@@ -1329,7 +1329,7 @@ function initAudio() {
       beepLongAudio.volume = 1.0;
     });
   }
-}
+
 
 
   if (!beepLongAudio) {
