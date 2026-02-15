@@ -1806,6 +1806,7 @@ if (phase === "work" && beepLast > 0 && remaining <= beepLast && remaining > 0) 
       stopAudio();          // évite overlap si un bip court jouait encore
       playBeepLong(0.6);
     } else {
+      stopAudio();    
       playBeep(0.4);
     }
   }
